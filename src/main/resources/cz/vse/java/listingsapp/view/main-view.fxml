@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.Button?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="cz.vse.java.listingsapp.controller.MainController">
-
-    <BorderPane fx:id="rootPane">
-        <top>
-            <Label text="Create a New Account" style="-fx-font-size: 24px; -fx-padding: 20;" BorderPane.alignment="CENTER"/>
-        </top>
-
-        <bottom>
-            <Button text="Sign Up" onAction="#signUp" style="-fx-font-size: 16px;" BorderPane.alignment="CENTER">
-                <BorderPane.margin>
-                    <Insets bottom="20"/>
-                </BorderPane.margin>
-            </Button>
-        </bottom>
-    </BorderPane>
-
-</StackPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-1.0" minWidth="-1.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.listingsapp.controller.MainViewController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="Listings">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="All Listings" onAction="#handleShowAllListings" />
+                        <MenuItem mnemonicParsing="false" text="Add a Listing" onAction="#handleAddListing" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="My Account">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="My Listings" onAction="#handleShowMyListings" />
+                        <MenuItem mnemonicParsing="false" text="See All Offers" onAction="#handleShowOffers" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Register as Business" onAction="#handleRegisterBusiness" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <Label text="Welcome to the Listings App!">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+    </center>
+</BorderPane>

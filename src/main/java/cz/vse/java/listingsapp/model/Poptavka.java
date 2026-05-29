@@ -1,14 +1,33 @@
 package cz.vse.java.listingsapp.model;
 
+import jakarta.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "poptavka")
 public class Poptavka {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String ico;
+
+    @ManyToOne
+    @JoinColumn(name = "pravnicka_osoba_id", referencedColumnName = "id")
+    private PravnickaOsoba pravnickaOsoba;
+
+    @Column(nullable = false)
     private String name;
+
+    @Lob
     private String description;
+
     private double price;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date", nullable = false, updatable = false)
     private Date createdDate;
+
+    // Getters and Setters
 
     public int getId() {
         return id;
@@ -18,12 +37,12 @@ public class Poptavka {
         this.id = id;
     }
 
-    public String getIco() {
-        return ico;
+    public PravnickaOsoba getPravnickaOsoba() {
+        return pravnickaOsoba;
     }
 
-    public void setIco(String ico) {
-        this.ico = ico;
+    public void setPravnickaOsoba(PravnickaOsoba pravnickaOsoba) {
+        this.pravnickaOsoba = pravnickaOsoba;
     }
 
     public String getName() {

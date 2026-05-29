@@ -10,7 +10,8 @@ import java.sql.Statement;
 import java.util.Properties;
 
 public class DatabaseService {
-    private static DatabaseService instance;
+    // Use volatile to ensure that multiple threads handle the instance variable correctly
+    private static volatile DatabaseService instance;
     private Connection connection;
 
     private DatabaseService() {
@@ -19,27 +20,44 @@ public class DatabaseService {
             // Use getResourceAsStream for robustly loading resources from the classpath
             try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
                 if (input == null) {
-                    System.err.println("Unable to find config.properties");
-                    return;
+                    // Throw an exception to indicate a critical configuration error
+                    throw new RuntimeException("Unable to find config.properties in the classpath.");
                 }
                 props.load(input);
             }
 
             connection = DriverManager.getConnection(props.getProperty("db.url"), props.getProperty("db.user"), props.getProperty("db.password"));
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            // Wrap the original exception in a RuntimeException to signal a fatal initialization error
+            throw new RuntimeException("Failed to connect to the database.", e);
         }
     }
 
+    // Double-checked locking for thread-safe and efficient singleton initialization
     public static DatabaseService getInstance() {
         if (instance == null) {
-            instance = new DatabaseService();
+            synchronized (DatabaseService.class) {
+                if (instance == null) {
+                    instance = new DatabaseService();
+                }
+            }
         }
         return instance;
     }
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Database connection closed.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void createTables() {
@@ -57,8 +75,8 @@ public class DatabaseService {
         }
 
         try (Statement statement = connection.createStatement()) {
-            // Split the script into individual statements based on the semicolon.
             // This simple split works for this schema but can be fragile for more complex SQL.
+            // For more complex scenarios, consider a dedicated SQL script runner library.
             String[] statements = sqlScript.split(";");
 
             for (String sql : statements) {

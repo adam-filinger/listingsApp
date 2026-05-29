@@ -4,17 +4,23 @@ import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
-import com.dlsc.formsfx.model.structure.PasswordField; // Import the correct class
+import com.dlsc.formsfx.model.structure.PasswordField;
 import com.dlsc.formsfx.model.validators.CustomValidator;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.UserService;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -23,38 +29,38 @@ public class MainController implements Initializable {
     @FXML
     public BorderPane rootPane;
 
-    private final Uzivatel userModel = new Uzivatel();
+    private final UserForm userForm = new UserForm();
     private Form signUpForm;
-    private final UserService userService = new UserService();
+    private UserService userService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        StringField nameField = Field.ofStringType(userModel.nameProperty())
+        userService = new UserService();
+
+        StringField nameField = Field.ofStringType(userForm.nameProperty())
                 .label("Full Name")
                 .required("This field is required");
 
-        StringField usernameField = Field.ofStringType(userModel.usernameProperty())
+        StringField usernameField = Field.ofStringType(userForm.usernameProperty())
                 .label("Username")
                 .required("This field is required");
 
-        StringField emailField = Field.ofStringType(userModel.emailProperty())
+        StringField emailField = Field.ofStringType(userForm.emailProperty())
                 .label("Email")
                 .required("This field is required")
                 .validate(CustomValidator.forPredicate(
                         s -> Pattern.matches("^[\\w-_.+]*[\\w-_.]@([\\w]+\\.)+[\\w]+[\\w]$", s),
                         "Please enter a valid email address"));
 
-        // Use the correct PasswordField type
-        PasswordField passwordField = Field.ofPasswordType(userModel.passwdProperty())
+        PasswordField passwordField = Field.ofPasswordType(userForm.passwordProperty())
                 .label("Password")
                 .required("This field is required");
 
-        // Use the correct PasswordField type
-        PasswordField confirmPasswordField = Field.ofPasswordType(userModel.confirmPasswdProperty())
+        PasswordField confirmPasswordField = Field.ofPasswordType(userForm.confirmPasswordProperty())
                 .label("Confirm Password")
                 .required("This field is required")
                 .validate(CustomValidator.forPredicate(
-                        s -> s.equals(passwordField.getValue()), // Validate against the other field's value
+                        s -> s.equals(passwordField.getValue()),
                         "Passwords do not match"));
 
         passwordField.valueProperty().addListener((obs, oldVal, newVal) -> confirmPasswordField.validate());
@@ -81,16 +87,34 @@ public class MainController implements Initializable {
             return;
         }
 
-        if (userService.userExists(userModel.getUsername(), userModel.getEmail())) {
+        Uzivatel user = new Uzivatel();
+        user.setName(userForm.nameProperty().get());
+        user.setUsername(userForm.usernameProperty().get());
+        user.setEmail(userForm.emailProperty().get());
+        user.setPasswd(userForm.passwordProperty().get());
+
+        if (userService.userExists(user.getUsername(), user.getEmail())) {
             showAlert(Alert.AlertType.ERROR, "Registration Failed", "A user with this username or email already exists.");
             return;
         }
 
-        if (userService.saveUser(userModel)) {
-            showAlert(Alert.AlertType.INFORMATION, "Success", "User registered successfully!");
+        if (userService.saveUser(user)) {
+            showSuccessDialog();
             signUpForm.reset();
         } else {
             showAlert(Alert.AlertType.ERROR, "Database Error", "An error occurred while saving the user.");
+        }
+    }
+
+    @FXML
+    private void goToLogin() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cz/vse/java/listingsapp/view/login-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -100,5 +124,22 @@ public class MainController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void showSuccessDialog() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("User registered successfully!");
+
+        ButtonType goToLoginButton = new ButtonType("Go to Login");
+        ButtonType closeButton = new ButtonType("Close");
+
+        alert.getButtonTypes().setAll(goToLoginButton, closeButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == goToLoginButton) {
+            goToLogin();
+        }
     }
 }

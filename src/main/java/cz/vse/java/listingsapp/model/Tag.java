@@ -1,8 +1,19 @@
 package cz.vse.java.listingsapp.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "tag")
 public class Tag {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(unique = true, nullable = false)
     private String name;
+
+    // Getters and Setters
 
     public int getId() {
         return id;

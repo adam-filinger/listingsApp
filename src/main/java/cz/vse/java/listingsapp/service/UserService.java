@@ -1,69 +1,77 @@
 package cz.vse.java.listingsapp.service;
 
 import cz.vse.java.listingsapp.model.Uzivatel;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import org.mindrot.jbcrypt.BCrypt;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class UserService {
 
-    private final Connection dbConnection;
+    private final JPAProvider jpaProvider;
 
     public UserService() {
-        this.dbConnection = DatabaseService.getInstance().getConnection();
+        this.jpaProvider = JPAProvider.getInstance();
     }
 
-    /**
-     * Checks if a user exists with the given username or email.
-     * @param username The username to check.
-     * @param email The email to check.
-     * @return True if a user exists, false otherwise.
-     */
     public boolean userExists(String username, String email) {
-        // Basic validation to prevent SQL injection, although PreparedStatement is the main protection.
         if (username == null || username.trim().isEmpty() || email == null || email.trim().isEmpty()) {
             return false;
         }
-        String sql = "SELECT COUNT(*) FROM Uzivatel WHERE username = ? OR email = ?";
-        try (PreparedStatement pstmt = dbConnection.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, email);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        EntityManager em = jpaProvider.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(u) FROM Uzivatel u WHERE u.username = :username OR u.email = :email", Long.class);
+            query.setParameter("username", username);
+            query.setParameter("email", email);
+            return query.getSingleResult() > 0;
+        } finally {
+            em.close();
         }
-        return false;
     }
 
-    /**
-     * Saves a new user to the database with a hashed password.
-     * @param user The Uzivatel object to save.
-     * @return True if the user was saved successfully, false otherwise.
-     */
     public boolean saveUser(Uzivatel user) {
-        if (user == null) {
+        if (user == null || user.getPasswd() == null) {
             return false;
         }
-        // Hash the password before saving
-        String hashedPassword = BCrypt.hashpw(user.getPasswd(), BCrypt.gensalt());
-
-        String sql = "INSERT INTO Uzivatel(name, username, email, passwd) VALUES(?, ?, ?, ?)";
-        try (PreparedStatement pstmt = dbConnection.prepareStatement(sql)) {
-            pstmt.setString(1, user.getName());
-            pstmt.setString(2, user.getUsername());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, hashedPassword);
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        EntityManager em = jpaProvider.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            String hashedPassword = BCrypt.hashpw(user.getPasswd(), BCrypt.gensalt());
+            user.setPasswd(hashedPassword);
+            em.persist(user);
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            // Propagate critical database errors
+            throw new RuntimeException("Error saving user", e);
+        } finally {
+            em.close();
         }
-        return false;
+    }
+
+    public Uzivatel login(String identifier, String password) {
+        if (identifier == null || identifier.trim().isEmpty() || password == null || password.isEmpty()) {
+            return null;
+        }
+        EntityManager em = jpaProvider.getEntityManager();
+        try {
+            TypedQuery<Uzivatel> query = em.createQuery(
+                    "SELECT u FROM Uzivatel u WHERE u.username = :identifier OR u.email = :identifier", Uzivatel.class);
+            query.setParameter("identifier", identifier);
+            Uzivatel user = query.getSingleResult();
+
+            if (BCrypt.checkpw(password, user.getPasswd())) {
+                return user;
+            }
+        } catch (NoResultException e) {
+            // User not found
+        } finally {
+            em.close();
+        }
+        return null;
     }
 }

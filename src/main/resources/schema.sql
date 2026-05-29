@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS Uzivatel (
 );
 
 -- PO Table
-CREATE TABLE IF NOT EXISTS PO (
+CREATE TABLE IF NOT EXISTS Pravnicka_Osoba (
     ICO VARCHAR(255) PRIMARY KEY,
     uzivatel_id INT,
     name VARCHAR(255),
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Poptavka (
     description TEXT,
     price DOUBLE,
     created_date DATE,
-    FOREIGN KEY (ICO) REFERENCES PO(ICO)
+    FOREIGN KEY (ICO) REFERENCES PRAVNICKA_OSOBA(ICO)
 );
 
 -- Tag Table
