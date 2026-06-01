@@ -6,26 +6,100 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controller for the main view of the application after login.
  * @author Adam Filinger
- * @version 1.4
+ * @version 1.9
  */
 public class MainViewController {
+    
+    private static final Logger logger = LoggerFactory.getLogger(MainViewController.class);
 
     @FXML
     private MenuItem registerBusinessMenuItem;
     @FXML
     private MenuItem addListingMenuItem;
     @FXML
-    private MenuItem showMyListingsMenuItem;
+    private MenuItem myListingsMenuItem;
+    @FXML
+    private MenuItem allListingsMenuItem;
+    @FXML
+    private MenuItem offersMenuItem;
+    @FXML
+    private MenuItem logoutMenuItem;
+    @FXML
+    private StackPane contentPane;
 
     private Uzivatel user;
     private boolean isBusiness;
+
+    private final Map<MenuItem, Pane> viewMap = new HashMap<>();
+    private final Map<MenuItem, String> viewPaths = new HashMap<>();
+    private MenuItem currentMenuItem;
+
+    @FXML
+    private void initialize() {
+        viewPaths.put(allListingsMenuItem, "/cz/vse/java/listingsapp/view/all-listings-view.fxml");
+        viewPaths.put(addListingMenuItem, "/cz/vse/java/listingsapp/view/add-listing-view.fxml");
+        viewPaths.put(myListingsMenuItem, "/cz/vse/java/listingsapp/view/my-listings-view.fxml");
+        viewPaths.put(offersMenuItem, "/cz/vse/java/listingsapp/view/offers-view.fxml");
+        viewPaths.put(registerBusinessMenuItem, "/cz/vse/java/listingsapp/view/bus_register-view.fxml");
+
+        handleShowAllListings();
+    }
+
+    private void switchView(MenuItem menuItem) {
+        if (currentMenuItem != null) {
+            currentMenuItem.setDisable(false);
+        }
+
+        if (viewMap.containsKey(menuItem)) {
+            Pane pane = viewMap.get(menuItem);
+            pane.toFront();
+        } else {
+            loadView(menuItem);
+        }
+
+        currentMenuItem = menuItem;
+        currentMenuItem.setDisable(true);
+    }
+
+    private void loadView(MenuItem menuItem) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(viewPaths.get(menuItem)));
+            Pane pane = fxmlLoader.load();
+            
+            Object controller = fxmlLoader.getController();
+            if (controller != null) {
+                try {
+                    Method setUserMethod = controller.getClass().getMethod("setUser", Uzivatel.class);
+                    setUserMethod.invoke(controller, user);
+                } catch (NoSuchMethodException e) {
+                    // It's okay if the controller doesn't have a setUser method
+                } catch (Exception e) {
+                    logger.error("Error setting user in controller for {}", viewPaths.get(menuItem), e);
+                }
+            }
+            
+            contentPane.getChildren().add(pane);
+            viewMap.put(menuItem, pane);
+            pane.toFront();
+        } catch (IOException e) {
+            logger.error("Failed to load view: {}", viewPaths.get(menuItem), e);
+            showErrorAlert();
+        }
+    }
 
     /**
      * Sets the user and their business status.
@@ -46,18 +120,15 @@ public class MainViewController {
             registerBusinessMenuItem.setVisible(false);
         } else {
             addListingMenuItem.setVisible(false);
-            showMyListingsMenuItem.setVisible(false);
+            myListingsMenuItem.setVisible(false);
         }
     }
-
-    /**
-     * Shows a "not implemented" alert.
-     */
-    private void showNotImplementedAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Feature Not Implemented");
+    
+    private void showErrorAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
-        alert.setContentText("This feature has not been implemented yet.");
+        alert.setContentText("Failed to load view.");
         alert.showAndWait();
     }
 
@@ -66,7 +137,7 @@ public class MainViewController {
      */
     @FXML
     private void handleShowAllListings() {
-        showNotImplementedAlert();
+        switchView(allListingsMenuItem);
     }
 
     /**
@@ -74,7 +145,7 @@ public class MainViewController {
      */
     @FXML
     private void handleAddListing() {
-        showNotImplementedAlert();
+        switchView(addListingMenuItem);
     }
 
     /**
@@ -82,7 +153,7 @@ public class MainViewController {
      */
     @FXML
     private void handleShowMyListings() {
-        showNotImplementedAlert();
+        switchView(myListingsMenuItem);
     }
 
     /**
@@ -90,7 +161,7 @@ public class MainViewController {
      */
     @FXML
     private void handleShowOffers() {
-        showNotImplementedAlert();
+        switchView(offersMenuItem);
     }
 
     /**
@@ -98,15 +169,22 @@ public class MainViewController {
      */
     @FXML
     private void handleRegisterBusiness() {
+        switchView(registerBusinessMenuItem);
+    }
+
+    /**
+     * Handles the "Logout" button action.
+     */
+    @FXML
+    private void handleLogout() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cz/vse/java/listingsapp/view/bus_register-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cz/vse/java/listingsapp/view/login-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-            BusRegisterController busRegisterController = fxmlLoader.getController();
-            busRegisterController.setUser(user);
-            Stage stage = (Stage) registerBusinessMenuItem.getParentPopup().getOwnerWindow();
+            Stage stage = (Stage) contentPane.getScene().getWindow();
             stage.setScene(scene);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load login view.", e);
+            showErrorAlert();
         }
     }
 }

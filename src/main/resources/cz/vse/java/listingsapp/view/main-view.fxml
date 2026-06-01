@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-1.0" minWidth="-1.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.listingsapp.controller.MainViewController">
@@ -14,26 +15,24 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Listings">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="All Listings" onAction="#handleShowAllListings" />
+                        <MenuItem fx:id="allListingsMenuItem" mnemonicParsing="false" text="All Listings" onAction="#handleShowAllListings" />
                         <MenuItem fx:id="addListingMenuItem" mnemonicParsing="false" text="Add a Listing" onAction="#handleAddListing" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="My Account">
                     <items>
-                        <MenuItem  fx:id="showMyListingsMenuItem" mnemonicParsing="false" text="My Listings" onAction="#handleShowMyListings" />
-                        <MenuItem mnemonicParsing="false" text="See All Offers" onAction="#handleShowOffers" />
+                        <MenuItem fx:id="myListingsMenuItem" mnemonicParsing="false" text="My Listings" onAction="#handleShowMyListings" />
+                        <MenuItem fx:id="offersMenuItem" mnemonicParsing="false" text="See All Offers" onAction="#handleShowOffers" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="registerBusinessMenuItem" mnemonicParsing="false" text="Register as Business" onAction="#handleRegisterBusiness" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="logoutMenuItem" mnemonicParsing="false" text="Logout" onAction="#handleLogout" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
     </top>
     <center>
-        <Label text="Welcome to the Listings App!">
-            <font>
-                <Font size="24.0" />
-            </font>
-        </Label>
+        <StackPane fx:id="contentPane" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
     </center>
 </BorderPane>
