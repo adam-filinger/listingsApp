@@ -5,7 +5,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane fx:controller="cz.vse.java.listingsapp.controller.BusRegisterController" xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="800.0">
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<BorderPane fx:controller="cz.vse.java.listingsapp.controller.BusRegisterController" xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #F5F5F5;">
+    <Label text="Business registration">
+        <font>
+            <Font size="24.0" />
+        </font>
+    </Label>
     <center>
         <VBox fx:id="formContainer" spacing="10" alignment="CENTER" />
     </center>

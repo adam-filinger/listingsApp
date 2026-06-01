@@ -1,15 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
 
-<Pane style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-        <Label text="All Listings">
-            <font>
-                <Font size="24.0" />
-            </font>
-        </Label>
-    </children>
-</Pane>
+<BorderPane style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cz.vse.java.listingsapp.controller.AllListingsController">
+
+    <top>
+        <VBox alignment="CENTER">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="All Listings">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <content>
+                <VBox fx:id="listingsContainer" spacing="15" style="-fx-background-color: #F5F5F5;">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

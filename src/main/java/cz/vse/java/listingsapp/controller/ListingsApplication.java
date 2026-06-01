@@ -35,11 +35,4 @@ public class ListingsApplication extends Application {
         stage.show();
     }
 
-    /**
-     * The main method of the application.
-     * @param args the command line arguments.
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

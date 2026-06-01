@@ -3,11 +3,15 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 
 <BorderPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="cz.vse.java.listingsapp.controller.MainController">
+            fx:controller="cz.vse.java.listingsapp.controller.SignUpController">
     <bottom>
         <VBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="10" right="10" bottom="20" left="10"/>
+            </padding>
             <Button text="Sign Up" onAction="#signUp"/>
             <Button text="Go to Login" onAction="#goToLogin"/>
         </VBox>

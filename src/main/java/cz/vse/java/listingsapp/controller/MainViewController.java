@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Controller for the main view of the application after login.
  * @author Adam Filinger
- * @version 1.9
+ * @version 2.2
  */
 public class MainViewController {
     
@@ -64,9 +64,11 @@ public class MainViewController {
             currentMenuItem.setDisable(false);
         }
 
+        contentPane.getChildren().clear();
+
         if (viewMap.containsKey(menuItem)) {
             Pane pane = viewMap.get(menuItem);
-            pane.toFront();
+            contentPane.getChildren().add(pane);
         } else {
             loadView(menuItem);
         }
@@ -92,9 +94,8 @@ public class MainViewController {
                 }
             }
             
-            contentPane.getChildren().add(pane);
             viewMap.put(menuItem, pane);
-            pane.toFront();
+            contentPane.getChildren().add(pane);
         } catch (IOException e) {
             logger.error("Failed to load view: {}", viewPaths.get(menuItem), e);
             showErrorAlert();
