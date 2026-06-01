@@ -2,6 +2,11 @@ package cz.vse.java.listingsapp.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Represents an offer made by a user for a listing.
+ * @author Adam Filinger
+ * @version 1.0
+ */
 @Entity
 @Table(name = "nabidka")
 public class Nabidka {
@@ -30,50 +35,86 @@ public class Nabidka {
 
     // Getters and Setters
 
+    /**
+     * @return the id of the offer
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * @param id the id to set
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * @return the listing for which the offer was made
+     */
     public Poptavka getPoptavka() {
         return poptavka;
     }
 
+    /**
+     * @param poptavka the listing to set
+     */
     public void setPoptavka(Poptavka poptavka) {
         this.poptavka = poptavka;
     }
 
+    /**
+     * @return the user who made the offer
+     */
     public Uzivatel getUzivatel() {
         return uzivatel;
     }
 
+    /**
+     * @param uzivatel the user to set
+     */
     public void setUzivatel(Uzivatel uzivatel) {
         this.uzivatel = uzivatel;
     }
 
+    /**
+     * @return the text of the offer
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * @param text the text to set
+     */
     public void setText(String text) {
         this.text = text;
     }
 
+    /**
+     * @return the proposed price of the offer
+     */
     public double getProposedPrice() {
         return proposedPrice;
     }
 
+    /**
+     * @param proposedPrice the proposed price to set
+     */
     public void setProposedPrice(double proposedPrice) {
         this.proposedPrice = proposedPrice;
     }
 
+    /**
+     * @return the status of the offer
+     */
     public StatusNabidky getStatus() {
         return status;
     }
 
+    /**
+     * @param status the status to set
+     */
     public void setStatus(StatusNabidky status) {
         this.status = status;
     }

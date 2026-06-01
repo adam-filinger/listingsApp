@@ -8,7 +8,18 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * The main class of the application.
+ * @author Adam Filinger
+ * @version 1.0
+ */
 public class ListingsApplication extends Application {
+    /**
+     * The main entry point for all JavaFX applications.
+     * @param stage the primary stage for this application, onto which
+     * the application scene can be set.
+     * @throws IOException if the fxml file cannot be found.
+     */
     @Override
     public void start(Stage stage) throws IOException {
         // Use getClass().getResource() for a more robust path to the FXML file
@@ -24,6 +35,10 @@ public class ListingsApplication extends Application {
         stage.show();
     }
 
+    /**
+     * The main method of the application.
+     * @param args the command line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }

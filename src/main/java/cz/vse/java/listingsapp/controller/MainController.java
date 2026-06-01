@@ -24,6 +24,12 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+/**
+ * Controller for the main view of the application.
+ * Handles user registration.
+ * @author Adam Filinger
+ * @version 1.0
+ */
 public class MainController implements Initializable {
 
     @FXML
@@ -33,6 +39,11 @@ public class MainController implements Initializable {
     private Form signUpForm;
     private UserService userService;
 
+    /**
+     * Initializes the controller class.
+     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         userService = new UserService();
@@ -78,6 +89,10 @@ public class MainController implements Initializable {
         rootPane.setCenter(new FormRenderer(signUpForm));
     }
 
+    /**
+     * Handles the sign up button action.
+     * Validates the form and saves the new user to the database.
+     */
     @FXML
     private void signUp() {
         signUpForm.persist();
@@ -106,6 +121,10 @@ public class MainController implements Initializable {
         }
     }
 
+    /**
+     * Handles the go to login button action.
+     * Switches the scene to the login view.
+     */
     @FXML
     private void goToLogin() {
         try {
@@ -118,6 +137,12 @@ public class MainController implements Initializable {
         }
     }
 
+    /**
+     * Shows an alert dialog.
+     * @param alertType The type of the alert.
+     * @param title The title of the alert.
+     * @param message The message of the alert.
+     */
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -126,6 +151,9 @@ public class MainController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Shows a success dialog after successful registration.
+     */
     private void showSuccessDialog() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");

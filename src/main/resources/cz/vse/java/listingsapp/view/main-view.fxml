@@ -15,15 +15,15 @@
                 <Menu mnemonicParsing="false" text="Listings">
                     <items>
                         <MenuItem mnemonicParsing="false" text="All Listings" onAction="#handleShowAllListings" />
-                        <MenuItem mnemonicParsing="false" text="Add a Listing" onAction="#handleAddListing" />
+                        <MenuItem fx:id="addListingMenuItem" mnemonicParsing="false" text="Add a Listing" onAction="#handleAddListing" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="My Account">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="My Listings" onAction="#handleShowMyListings" />
+                        <MenuItem  fx:id="showMyListingsMenuItem" mnemonicParsing="false" text="My Listings" onAction="#handleShowMyListings" />
                         <MenuItem mnemonicParsing="false" text="See All Offers" onAction="#handleShowOffers" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Register as Business" onAction="#handleRegisterBusiness" />
+                        <MenuItem fx:id="registerBusinessMenuItem" mnemonicParsing="false" text="Register as Business" onAction="#handleRegisterBusiness" />
                     </items>
                 </Menu>
             </menus>

@@ -2,6 +2,11 @@ package cz.vse.java.listingsapp.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Represents a tag that can be associated with a listing.
+ * @author Adam Filinger
+ * @version 1.0
+ */
 @Entity
 @Table(name = "tag")
 public class Tag {

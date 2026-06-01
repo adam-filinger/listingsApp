@@ -21,6 +21,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the login view of the application.
+ * Handles user login.
+ * @author Adam Filinger
+ * @version 1.1
+ */
 public class LoginController implements Initializable {
 
     @FXML
@@ -30,6 +36,11 @@ public class LoginController implements Initializable {
     private Form form;
     private UserService userService;
 
+    /**
+     * Initializes the controller class.
+     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         userService = new UserService();
@@ -52,6 +63,10 @@ public class LoginController implements Initializable {
         rootPane.setCenter(new FormRenderer(form));
     }
 
+    /**
+     * Handles the login button action.
+     * Validates the form and logs in the user.
+     */
     @FXML
     private void login() {
         form.persist();
@@ -64,11 +79,13 @@ public class LoginController implements Initializable {
         Uzivatel user = userService.login(loginForm.identifierProperty().get(), loginForm.passwordProperty().get());
 
         if (user != null) {
+            boolean isBusiness = userService.isBusiness(user);
             // Switch to the main view
             try {
-                //showAlert(Alert.AlertType.CONFIRMATION, "Login successful", "You are logged in as " + user.getName() + ".");
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cz/vse/java/listingsapp/view/main-view.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+                MainViewController mainViewController = fxmlLoader.getController();
+                mainViewController.setUser(user, isBusiness);
                 Stage stage = (Stage) rootPane.getScene().getWindow();
                 stage.setScene(scene);
             }
@@ -80,6 +97,10 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Handles the go to sign up button action.
+     * Switches the scene to the sign up view.
+     */
     @FXML
     private void goToSignUp() {
         try {
@@ -92,6 +113,12 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Shows an alert dialog.
+     * @param alertType The type of the alert.
+     * @param title The title of the alert.
+     * @param message The message of the alert.
+     */
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

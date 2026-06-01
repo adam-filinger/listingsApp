@@ -11,6 +11,8 @@ module cz.vse.java.listingsapp.listingsapp {
     requires jbcrypt;
     requires jakarta.persistence;
     requires org.hibernate.orm.core;
+    requires ch.qos.logback.classic;
+    requires org.slf4j;
 
     opens cz.vse.java.listingsapp.model to org.hibernate.orm.core;
     opens cz.vse.java.listingsapp.controller to javafx.fxml;

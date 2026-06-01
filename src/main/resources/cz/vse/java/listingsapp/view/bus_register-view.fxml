@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane fx:controller="cz.vse.java.listingsapp.controller.BusRegisterController" xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="800.0">
+    <center>
+        <VBox fx:id="formContainer" spacing="10" alignment="CENTER" />
+    </center>
+    <bottom>
+        <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+            <Button text="Register" onAction="#register" />
+            <Button text="Back to Main Menu" onAction="#goToMainMenu" />
+        </HBox>
+    </bottom>
+</BorderPane>
