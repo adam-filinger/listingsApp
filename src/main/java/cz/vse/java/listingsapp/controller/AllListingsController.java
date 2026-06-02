@@ -20,12 +20,13 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
  * Controller for displaying all listings.
  * @author Adam Filinger
- * @version 1.4
+ * @version 1.5
  */
 public class AllListingsController extends Controller implements Initializable {
 
@@ -37,35 +38,17 @@ public class AllListingsController extends Controller implements Initializable {
     private ListingService listingService;
     private Uzivatel user;
 
-    /**
-     * Initializes the controller class.
-     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
-     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
-     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         listingService = new ListingService();
-        
-        listingsContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                loadListings();
-            }
-        });
-
+    }
+    
+    @Override
+    void onView(Poptavka listing, Uzivatel user) {
+        this.user = user;
         loadListings();
     }
 
-    /**
-     * Sets the user for the controller.
-     * @param user The user.
-     */
-    public void setUser(Uzivatel user) {
-        this.user = user;
-    }
-
-    /**
-     * Loads all listings from the service and displays them.
-     */
     private void loadListings() {
         listingsContainer.getChildren().clear();
         List<Poptavka> listings = listingService.getAllPoptavky();
@@ -82,11 +65,6 @@ public class AllListingsController extends Controller implements Initializable {
         }
     }
 
-    /**
-     * Creates a card view for a single listing.
-     * @param listing The listing to display.
-     * @return A VBox representing the listing card.
-     */
     private VBox createListingCard(Poptavka listing) {
         VBox card = new VBox(10);
         card.setStyle("-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 15;");
@@ -121,22 +99,24 @@ public class AllListingsController extends Controller implements Initializable {
         dateLabel.setStyle("-fx-text-fill: #757575;");
         footerPane.getChildren().addAll(companyLabel, footerSpacer, dateLabel);
 
-        HBox buttonPane = new HBox();
-        buttonPane.setAlignment(Pos.CENTER_RIGHT);
-        Button makeOfferButton = new Button("Make Offer");
-        makeOfferButton.setOnAction(event -> handleMakeOffer(listing));
-        buttonPane.getChildren().add(makeOfferButton);
+        card.getChildren().addAll(titlePane, descriptionLabel, footerPane);
 
-        card.getChildren().addAll(titlePane, descriptionLabel, footerPane, buttonPane);
+        if(!Objects.equals(listing.getPravnickaOsoba().getId(), user.getId())){
+            HBox buttonPane = new HBox();
+            buttonPane.setAlignment(Pos.CENTER_RIGHT);
+            Button makeOfferButton = new Button("Make Offer");
+            makeOfferButton.setOnAction(event -> handleMakeOffer(listing));
+            buttonPane.getChildren().add(makeOfferButton);
+            card.getChildren().add(buttonPane);
+        }
+
+
         return card;
     }
 
-    /**
-     * Handles the action of making an offer on a listing.
-     * @param listing The listing to make an offer on.
-     */
     private void handleMakeOffer(Poptavka listing) {
-        logger.info("User wants to make an offer on listing: " + listing.getName());
+        if (mainController != null) {
+            mainController.showCreateOfferView(listing);
+        }
     }
-
 }

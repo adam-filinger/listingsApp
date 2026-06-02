@@ -86,6 +86,7 @@ public class LoginController extends Controller implements Initializable {
                 Scene scene = new Scene(fxmlLoader.load(), 800, 600);
                 MainViewController mainViewController = fxmlLoader.getController();
                 mainViewController.setUser(user, isBusiness);
+                mainViewController.onView();
                 Stage stage = (Stage) rootPane.getScene().getWindow();
                 stage.setScene(scene);
             }

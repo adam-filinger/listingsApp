@@ -2,6 +2,7 @@ package cz.vse.java.listingsapp.service;
 
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
+import cz.vse.java.listingsapp.model.Uzivatel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.TypedQuery;
@@ -11,7 +12,7 @@ import java.util.Collections;
 /**
  * Service for handling listing-related operations.
  * @author Adam Filinger
- * @version 1.2
+ * @version 1.4
  */
 public class ListingService {
 
@@ -45,7 +46,6 @@ public class ListingService {
             }
             return false;
         } finally {
-            poptavka.getVersion();
             em.close();
         }
     }
@@ -78,7 +78,6 @@ public class ListingService {
             // Optionally, wrap in a custom service exception
         } finally {
             em.close();
-            poptavka.setVersion(getPoptavkaVersion(poptavka));
         }
     }
 
@@ -139,13 +138,41 @@ public class ListingService {
         }
     }
 
-    private int getPoptavkaVersion(Poptavka poptavka){
+    /**
+     * Retrieves all offers for a given listing.
+     * @param poptavka The listing to get offers for.
+     * @return A list of offers.
+     */
+    public List<Nabidka> getOffersForListing(Poptavka poptavka) {
         EntityManager em = jpaProvider.getEntityManager();
         try {
-            return em.find(Poptavka.class, poptavka.getId()).getVersion();
+            TypedQuery<Nabidka> query = em.createQuery(
+                    "SELECT n FROM Nabidka n WHERE n.poptavka = :poptavka ORDER BY n.id DESC", Nabidka.class);
+            query.setParameter("poptavka", poptavka);
+            return query.getResultList();
+        } catch (Exception e) {
+            return Collections.emptyList();
         } finally {
             em.close();
         }
     }
 
+    /**
+     * Retrieves all offers made by a specific user.
+     * @param user The user to get offers for.
+     * @return A list of offers.
+     */
+    public List<Nabidka> getOffersByUser(Uzivatel user) {
+        EntityManager em = jpaProvider.getEntityManager();
+        try {
+            TypedQuery<Nabidka> query = em.createQuery(
+                    "SELECT n FROM Nabidka n WHERE n.uzivatel = :user ORDER BY n.id DESC", Nabidka.class);
+            query.setParameter("user", user);
+            return query.getResultList();
+        } catch (Exception e) {
+            return Collections.emptyList();
+        } finally {
+            em.close();
+        }
+    }
 }

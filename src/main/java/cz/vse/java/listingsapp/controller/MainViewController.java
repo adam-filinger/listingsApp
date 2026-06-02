@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Controller for the main view of the application after login.
  * @author Adam Filinger
- * @version 2.5
+ * @version 2.8
  */
 public class MainViewController {
     
@@ -55,12 +55,11 @@ public class MainViewController {
         viewPaths.put("allListings", "/cz/vse/java/listingsapp/view/all-listings-view.fxml");
         viewPaths.put("addListing", "/cz/vse/java/listingsapp/view/add-listing-view.fxml");
         viewPaths.put("myListings", "/cz/vse/java/listingsapp/view/my-listings-view.fxml");
-        viewPaths.put("offers", "/cz/vse/java/listingsapp/view/offers-view.fxml");
+        viewPaths.put("myOffers", "/cz/vse/java/listingsapp/view/my-offers-view.fxml");
         viewPaths.put("registerBusiness", "/cz/vse/java/listingsapp/view/bus_register-view.fxml");
         viewPaths.put("listingDetail", "/cz/vse/java/listingsapp/view/listing-detail-view.fxml");
         viewPaths.put("editListing", "/cz/vse/java/listingsapp/view/edit-listing-view.fxml");
-
-        handleShowAllListings();
+        viewPaths.put("createOffer", "/cz/vse/java/listingsapp/view/create-offer-view.fxml");
     }
 
     private void switchView(String viewName, Poptavka listing) {
@@ -97,13 +96,13 @@ public class MainViewController {
                 try {
                     Method setUserMethod = controller.getClass().getMethod("setUser", Uzivatel.class);
                     setUserMethod.invoke(controller, user);
-                    controllerMap.put(viewName, controller);
-                    controllerMap.get(viewName).setMainController(this);
                 } catch (NoSuchMethodException e) {
                     // It's okay if the controller doesn't have a setUser method
                 } catch (Exception e) {
                     logger.error("Error setting user in controller for {}", viewPath, e);
                 }
+                controllerMap.put(viewName, controller);
+                controllerMap.get(viewName).setMainController(this);
             }
             
             viewMap.put(viewName, pane);
@@ -174,7 +173,7 @@ public class MainViewController {
      */
     @FXML
     private void handleShowOffers() {
-        switchView("offers", null);
+        switchView("myOffers", null);
     }
 
     /**
@@ -215,5 +214,17 @@ public class MainViewController {
      */
     public void showEditListing(Poptavka listing) {
         switchView("editListing", listing);
+    }
+
+    /**
+     * Shows the create offer view.
+     * @param listing The listing to make an offer on.
+     */
+    public void showCreateOfferView(Poptavka listing) {
+        switchView("createOffer", listing);
+    }
+
+    public void onView() {
+        handleShowAllListings();
     }
 }

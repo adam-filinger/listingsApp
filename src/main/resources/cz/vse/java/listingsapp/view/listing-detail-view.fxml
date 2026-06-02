@@ -17,7 +17,7 @@
                         <Font name="System Bold" size="24.0" />
                     </font>
                 </Label>
-                <Label fx:id="priceLabel" text="0">
+                <Label fx:id="priceLabel">
                     <font>
                         <Font name="System Bold" size="20.0" />
                     </font>
@@ -61,11 +61,24 @@
         <HBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS">
             <children>
                 <Button fx:id="modifyButton" mnemonicParsing="false" onAction="#handleModify" text="Modify Listing" visible="false" />
-                <Button fx:id="answerButton" mnemonicParsing="false" onAction="#handleAnswer" text="Answer Listing" visible="false" />
+                <Button fx:id="makeOfferButton" mnemonicParsing="false" onAction="#handleMakeOffer" text="Make Offer" visible="false" />
             </children>
             <VBox.margin>
                 <Insets top="20.0" />
             </VBox.margin>
         </HBox>
+        <VBox spacing="10" VBox.vgrow="ALWAYS">
+            <children>
+                <Label text="Offers:">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+                <VBox fx:id="offersContainer" spacing="10" />
+            </children>
+            <VBox.margin>
+                <Insets top="20.0" />
+            </VBox.margin>
+        </VBox>
     </children>
 </VBox>

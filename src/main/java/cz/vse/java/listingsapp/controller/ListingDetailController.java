@@ -1,20 +1,25 @@
 package cz.vse.java.listingsapp.controller;
 
+import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
+import cz.vse.java.listingsapp.service.ListingService;
 import cz.vse.java.listingsapp.service.UserService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Controller for the listing detail view.
  * @author Adam Filinger
- * @version 1.1
+ * @version 1.3
  */
 public class ListingDetailController extends Controller {
 
@@ -33,36 +38,24 @@ public class ListingDetailController extends Controller {
     @FXML
     private Button modifyButton;
     @FXML
-    private Button answerButton;
+    private Button makeOfferButton;
+    @FXML
+    private VBox offersContainer;
 
     private Poptavka listing;
     private Uzivatel user;
-    private MainViewController mainViewController;
-    private UserService us = new UserService();
+    private UserService userService = new UserService();
+    private ListingService listingService = new ListingService();
 
-    /**
-     * Initializes the controller with the listing data.
-     * @param listing The listing to display.
-     * @param user The current user.
-     */
-    public void setListing(Poptavka listing, Uzivatel user) {
+    @Override
+    public void onView(Poptavka listing, Uzivatel user) {
         this.listing = listing;
         this.user = user;
         displayListingDetails();
         updateButtonVisibility();
+        loadOffers();
     }
 
-    /**
-     * Sets the main view controller.
-     * @param mainViewController The main view controller.
-     */
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
-    }
-
-    /**
-     * Populates the view with the listing's details.
-     */
     private void displayListingDetails() {
         titleLabel.setText(listing.getName());
         priceLabel.setText(String.format("$%.2f", listing.getPrice()));
@@ -72,40 +65,57 @@ public class ListingDetailController extends Controller {
         dateLabel.setText(dateFormat.format(listing.getCreatedDate()));
     }
 
-    /**
-     * Shows or hides buttons based on user ownership of the listing.
-     */
     private void updateButtonVisibility() {
-        if (user != null && (us.isBusiness(user) && user.getId() == listing.getPravnickaOsoba().getId())) {
+        if (user != null && (userService.isBusiness(user) && user.getId() == listing.getPravnickaOsoba().getId())) {
             modifyButton.setVisible(true);
-            answerButton.setVisible(false);
+            makeOfferButton.setVisible(false);
         } else {
             modifyButton.setVisible(false);
-            answerButton.setVisible(true);
+            makeOfferButton.setVisible(true);
         }
     }
 
-    /**
-     * Handles the "Modify Listing" button action.
-     */
+    private void loadOffers() {
+        offersContainer.getChildren().clear();
+        List<Nabidka> offers = listingService.getOffersForListing(listing);
+
+        if (offers.isEmpty()) {
+            Label noOffersLabel = new Label("No offers have been made for this listing yet.");
+            offersContainer.getChildren().add(noOffersLabel);
+            return;
+        }
+
+        for (Nabidka offer : offers) {
+            offersContainer.getChildren().add(createOfferCard(offer));
+        }
+    }
+
+    private VBox createOfferCard(Nabidka offer) {
+        VBox card = new VBox(5);
+        card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #DDDDDD; -fx-border-radius: 3; -fx-padding: 10;");
+
+        Label userLabel = new Label("Offer from: " + offer.getUzivatel().getName());
+        userLabel.setFont(new Font("System Bold", 14));
+
+        Label priceLabel = new Label(String.format("Proposed Price: $%.2f", offer.getProposedPrice()));
+        Label messageLabel = new Label(offer.getText());
+        messageLabel.setWrapText(true);
+
+        card.getChildren().addAll(userLabel, priceLabel, messageLabel);
+        return card;
+    }
+
     @FXML
     private void handleModify() {
-        if (mainViewController != null) {
-            mainViewController.showEditListing(listing);
+        if (mainController != null) {
+            mainController.showEditListing(listing);
         }
     }
 
-    /**
-     * Handles the "Answer Listing" button action.
-     */
     @FXML
-    private void handleAnswer() {
-        // Placeholder for answering logic
-        logger.info("Answer button clicked for listing: " + listing.getName());
-    }
-
-    @Override
-    public void onView(Poptavka listing, Uzivatel user) {
-        setListing(listing, user);
+    private void handleMakeOffer() {
+        if (mainController != null) {
+            mainController.showCreateOfferView(listing);
+        }
     }
 }

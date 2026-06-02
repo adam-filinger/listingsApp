@@ -29,7 +29,6 @@ public class EditListingController extends Controller {
 
     private Poptavka listing;
     private ListingService listingService;
-    private MainViewController mainViewController;
 
     /**
      * Initializes the controller.
@@ -47,13 +46,6 @@ public class EditListingController extends Controller {
         populateFields();
     }
 
-    /**
-     * Sets the main view controller.
-     * @param mainViewController The main view controller.
-     */
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
-    }
 
     /**
      * Populates the input fields with the listing's data.
@@ -77,14 +69,14 @@ public class EditListingController extends Controller {
             listingService.updatePoptavka(listing);
 
             // Navigate back to the detail view
-            mainViewController.showListingDetail(listing);
+            mainController.showListingDetail(listing);
         } catch (NumberFormatException e) {
             showErrorAlert("Invalid price format.");
         } catch (OptimisticLockException e) {
             logger.warn("Optimistic lock failed for listing: {}", listing.getId(), e);
             showErrorAlert("This listing has been modified by another user. Please reload and try again.");
             // Optionally, refresh the listing data
-            mainViewController.showListingDetail(listingService.findPoptavkaById(listing.getId()));
+            mainController.showListingDetail(listingService.findPoptavkaById(listing.getId()));
         } catch (Exception e) {
             logger.error("Failed to update listing: {}", listing.getId(), e);
             showErrorAlert("Failed to update the listing.");
@@ -96,7 +88,7 @@ public class EditListingController extends Controller {
      */
     @FXML
     private void handleCancel() {
-        mainViewController.showListingDetail(listing);
+        mainController.showListingDetail(listing);
     }
 
     /**
