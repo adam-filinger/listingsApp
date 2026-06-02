@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
  * @author Adam Filinger
  * @version 1.1
  */
-public class AddListingController implements Initializable {
+public class AddListingController implements Initializable, Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(AddListingController.class);
 
@@ -219,5 +219,10 @@ public class AddListingController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @Override
+    public void onView() {
+            // No specific action needed when the view is shown
     }
 }

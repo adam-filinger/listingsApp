@@ -3,6 +3,7 @@ package cz.vse.java.listingsapp.service;
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Collections;
@@ -10,7 +11,7 @@ import java.util.Collections;
 /**
  * Service for handling listing-related operations.
  * @author Adam Filinger
- * @version 1.1
+ * @version 1.2
  */
 public class ListingService {
 
@@ -44,9 +45,57 @@ public class ListingService {
             }
             return false;
         } finally {
+            poptavka.getVersion();
             em.close();
         }
     }
+    
+    /**
+     * Updates an existing listing in the database.
+     * This method uses optimistic locking.
+     * @param poptavka The listing with updated data.
+     * @throws OptimisticLockException if the listing has been updated by another transaction.
+     */
+    public void updatePoptavka(Poptavka poptavka) throws OptimisticLockException {
+        if (poptavka == null) {
+            return;
+        }
+        EntityManager em = jpaProvider.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(poptavka);
+            em.getTransaction().commit();
+        } catch (OptimisticLockException e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            // Re-throw the exception to be handled by the controller
+            throw e;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            // Optionally, wrap in a custom service exception
+        } finally {
+            em.close();
+            poptavka.setVersion(getPoptavkaVersion(poptavka));
+        }
+    }
+
+    /**
+     * Finds a listing by its ID.
+     * @param id The ID of the listing to find.
+     * @return The found listing, or null if not found.
+     */
+    public Poptavka findPoptavkaById(int id) {
+        EntityManager em = jpaProvider.getEntityManager();
+        try {
+            return em.find(Poptavka.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
 
     /**
      * Saves a new offer to the database.
@@ -89,4 +138,14 @@ public class ListingService {
             em.close();
         }
     }
+
+    private int getPoptavkaVersion(Poptavka poptavka){
+        EntityManager em = jpaProvider.getEntityManager();
+        try {
+            return em.find(Poptavka.class, poptavka.getId()).getVersion();
+        } finally {
+            em.close();
+        }
+    }
+
 }

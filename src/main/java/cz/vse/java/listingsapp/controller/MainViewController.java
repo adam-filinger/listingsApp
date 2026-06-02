@@ -1,5 +1,6 @@
 package cz.vse.java.listingsapp.controller;
 
+import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +21,7 @@ import java.util.Map;
 /**
  * Controller for the main view of the application after login.
  * @author Adam Filinger
- * @version 2.2
+ * @version 2.5
  */
 public class MainViewController {
     
@@ -44,42 +45,48 @@ public class MainViewController {
     private Uzivatel user;
     private boolean isBusiness;
 
-    private final Map<MenuItem, Pane> viewMap = new HashMap<>();
-    private final Map<MenuItem, String> viewPaths = new HashMap<>();
-    private MenuItem currentMenuItem;
+    private final Map<String, Pane> viewMap = new HashMap<>();
+    private final Map<String, Controller> controllerMap = new HashMap<>();
+    private final Map<String, String> viewPaths = new HashMap<>();
+    private String currentView;
 
     @FXML
     private void initialize() {
-        viewPaths.put(allListingsMenuItem, "/cz/vse/java/listingsapp/view/all-listings-view.fxml");
-        viewPaths.put(addListingMenuItem, "/cz/vse/java/listingsapp/view/add-listing-view.fxml");
-        viewPaths.put(myListingsMenuItem, "/cz/vse/java/listingsapp/view/my-listings-view.fxml");
-        viewPaths.put(offersMenuItem, "/cz/vse/java/listingsapp/view/offers-view.fxml");
-        viewPaths.put(registerBusinessMenuItem, "/cz/vse/java/listingsapp/view/bus_register-view.fxml");
+        viewPaths.put("allListings", "/cz/vse/java/listingsapp/view/all-listings-view.fxml");
+        viewPaths.put("addListing", "/cz/vse/java/listingsapp/view/add-listing-view.fxml");
+        viewPaths.put("myListings", "/cz/vse/java/listingsapp/view/my-listings-view.fxml");
+        viewPaths.put("offers", "/cz/vse/java/listingsapp/view/offers-view.fxml");
+        viewPaths.put("registerBusiness", "/cz/vse/java/listingsapp/view/bus_register-view.fxml");
+        viewPaths.put("listingDetail", "/cz/vse/java/listingsapp/view/listing-detail-view.fxml");
+        viewPaths.put("editListing", "/cz/vse/java/listingsapp/view/edit-listing-view.fxml");
 
         handleShowAllListings();
     }
 
-    private void switchView(MenuItem menuItem) {
-        if (currentMenuItem != null) {
-            currentMenuItem.setDisable(false);
-        }
-
+    private void switchView(String viewName, Poptavka listing) {
         contentPane.getChildren().clear();
 
-        if (viewMap.containsKey(menuItem)) {
-            Pane pane = viewMap.get(menuItem);
+        if (viewMap.containsKey(viewName)) {
+            Pane pane = viewMap.get(viewName);
             contentPane.getChildren().add(pane);
+            controllerMap.get(viewName).onView();
         } else {
-            loadView(menuItem);
+            loadView(viewName, listing);
         }
 
-        currentMenuItem = menuItem;
-        currentMenuItem.setDisable(true);
+        currentView = viewName;
     }
 
-    private void loadView(MenuItem menuItem) {
+    private void loadView(String viewName, Poptavka listing) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(viewPaths.get(menuItem)));
+            String viewPath = viewPaths.get(viewName);
+            
+            if (viewPath == null) {
+                logger.error("No view path found for view: {}", viewName);
+                return;
+            }
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(viewPath));
             Pane pane = fxmlLoader.load();
             
             Object controller = fxmlLoader.getController();
@@ -90,14 +97,33 @@ public class MainViewController {
                 } catch (NoSuchMethodException e) {
                     // It's okay if the controller doesn't have a setUser method
                 } catch (Exception e) {
-                    logger.error("Error setting user in controller for {}", viewPaths.get(menuItem), e);
+                    logger.error("Error setting user in controller for {}", viewPath, e);
+                }
+
+                if (controller instanceof AllListingsController) {
+                    ((AllListingsController) controller).setMainViewController(this);
+                }
+
+                if (controller instanceof ListingDetailController) {
+                    ((ListingDetailController) controller).setMainViewController(this);
+                    if (listing != null) {
+                        ((ListingDetailController) controller).setListing(listing, user);
+                    }
+                }
+
+                if (controller instanceof EditListingController) {
+                    ((EditListingController) controller).setMainViewController(this);
+                    if (listing != null) {
+                        ((EditListingController) controller).setListing(listing);
+                    }
                 }
             }
             
-            viewMap.put(menuItem, pane);
+            viewMap.put(viewName, pane);
+            controllerMap.put(viewName, (Controller) controller);
             contentPane.getChildren().add(pane);
         } catch (IOException e) {
-            logger.error("Failed to load view: {}", viewPaths.get(menuItem), e);
+            logger.error("Failed to load view: {}", viewPaths.get(viewName), e);
             showErrorAlert();
         }
     }
@@ -138,7 +164,7 @@ public class MainViewController {
      */
     @FXML
     private void handleShowAllListings() {
-        switchView(allListingsMenuItem);
+        switchView("allListings", null);
     }
 
     /**
@@ -146,7 +172,7 @@ public class MainViewController {
      */
     @FXML
     private void handleAddListing() {
-        switchView(addListingMenuItem);
+        switchView("addListing", null);
     }
 
     /**
@@ -154,7 +180,7 @@ public class MainViewController {
      */
     @FXML
     private void handleShowMyListings() {
-        switchView(myListingsMenuItem);
+        switchView("myListings", null);
     }
 
     /**
@@ -162,7 +188,7 @@ public class MainViewController {
      */
     @FXML
     private void handleShowOffers() {
-        switchView(offersMenuItem);
+        switchView("offers", null);
     }
 
     /**
@@ -170,7 +196,7 @@ public class MainViewController {
      */
     @FXML
     private void handleRegisterBusiness() {
-        switchView(registerBusinessMenuItem);
+        switchView("registerBusiness", null);
     }
 
     /**
@@ -187,5 +213,21 @@ public class MainViewController {
             logger.error("Failed to load login view.", e);
             showErrorAlert();
         }
+    }
+
+    /**
+     * Shows the listing detail view.
+     * @param listing The listing to display.
+     */
+    public void showListingDetail(Poptavka listing) {
+        switchView("listingDetail", listing);
+    }
+
+    /**
+     * Shows the edit listing view.
+     * @param listing The listing to edit.
+     */
+    public void showEditListing(Poptavka listing) {
+        switchView("editListing", listing);
     }
 }

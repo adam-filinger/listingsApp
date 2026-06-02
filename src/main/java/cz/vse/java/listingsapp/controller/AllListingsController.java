@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -24,9 +25,9 @@ import java.util.ResourceBundle;
 /**
  * Controller for displaying all listings.
  * @author Adam Filinger
- * @version 1.2
+ * @version 1.4
  */
-public class AllListingsController implements Initializable {
+public class AllListingsController implements Initializable, Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(AllListingsController.class);
 
@@ -35,6 +36,7 @@ public class AllListingsController implements Initializable {
 
     private ListingService listingService;
     private Uzivatel user;
+    private MainViewController mainViewController;
 
     /**
      * Initializes the controller class.
@@ -45,16 +47,13 @@ public class AllListingsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         listingService = new ListingService();
         
-        // Listen to scene property changes. When the view is added to the scene graph
-        // (which happens every time we switch to this view in MainViewController),
-        // we reload the listings. This decouples the refresh logic from MainViewController.
         listingsContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 loadListings();
             }
         });
 
-        loadListings(); // Initial load
+        loadListings();
     }
 
     /**
@@ -63,8 +62,14 @@ public class AllListingsController implements Initializable {
      */
     public void setUser(Uzivatel user) {
         this.user = user;
-        // We might need to reload listings or update UI based on the user
-        // For now, we assume listings are public
+    }
+
+    /**
+     * Sets the main view controller.
+     * @param mainViewController The main view controller.
+     */
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
     }
 
     /**
@@ -95,7 +100,14 @@ public class AllListingsController implements Initializable {
         VBox card = new VBox(10);
         card.setStyle("-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 15;");
 
-        // Title and Price
+        card.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (mainViewController != null) {
+                    mainViewController.showListingDetail(listing);
+                }
+            }
+        });
+
         HBox titlePane = new HBox();
         Label titleLabel = new Label(listing.getName());
         titleLabel.setFont(new Font("System Bold", 18));
@@ -105,11 +117,9 @@ public class AllListingsController implements Initializable {
         priceLabel.setFont(new Font("System Bold", 16));
         titlePane.getChildren().addAll(titleLabel, spacer, priceLabel);
 
-        // Description
         Label descriptionLabel = new Label(listing.getDescription());
         descriptionLabel.setWrapText(true);
 
-        // Company and Date
         HBox footerPane = new HBox();
         Label companyLabel = new Label("by " + listing.getPravnickaOsoba().getName());
         companyLabel.setStyle("-fx-text-fill: #757575;");
@@ -120,7 +130,6 @@ public class AllListingsController implements Initializable {
         dateLabel.setStyle("-fx-text-fill: #757575;");
         footerPane.getChildren().addAll(companyLabel, footerSpacer, dateLabel);
 
-        // Make Offer Button
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER_RIGHT);
         Button makeOfferButton = new Button("Make Offer");
@@ -136,14 +145,11 @@ public class AllListingsController implements Initializable {
      * @param listing The listing to make an offer on.
      */
     private void handleMakeOffer(Poptavka listing) {
-        // This is a placeholder. We need a way to switch to the offer form.
-        // For now, we can just log it.
         logger.info("User wants to make an offer on listing: " + listing.getName());
-        
-        // To implement this properly, we would need to communicate with MainViewController
-        // to switch the view to the offer form and pass the listing object.
-        // Example: ((MainViewController) listingsContainer.getScene().getRoot().getController()).showOfferForm(listing);
-        // This is not a good practice due to tight coupling. A better approach would be an event bus
-        // or a shared service. For now, we'll leave it as a placeholder.
+    }
+
+    @Override
+    public void onView() {
+
     }
 }

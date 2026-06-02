@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS Poptavka (
     description TEXT,
     price DOUBLE,
     created_date DATE,
+    version INT,
     FOREIGN KEY (ICO) REFERENCES PRAVNICKA_OSOBA(ICO)
 );
 

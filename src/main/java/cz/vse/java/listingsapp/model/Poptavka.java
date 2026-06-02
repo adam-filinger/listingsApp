@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Represents a listing created by a legal entity.
  * @author Adam Filinger
- * @version 1.0
+ * @version 1.1
  */
 @Entity
 @Table(name = "poptavka")
@@ -15,6 +15,9 @@ public class Poptavka {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Version
+    private int version;
 
     @ManyToOne
     @JoinColumn(name = "pravnicka_osoba_id", referencedColumnName = "id")
@@ -46,6 +49,20 @@ public class Poptavka {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * @return the version of the entity
+     */
+    public int getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     /**

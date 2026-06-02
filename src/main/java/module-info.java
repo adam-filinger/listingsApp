@@ -13,6 +13,7 @@ module cz.vse.java.listingsapp.listingsapp {
     requires org.hibernate.orm.core;
     requires ch.qos.logback.classic;
     requires org.slf4j;
+    requires annotations;
 
     opens cz.vse.java.listingsapp.model to org.hibernate.orm.core;
     opens cz.vse.java.listingsapp.controller to javafx.fxml;
