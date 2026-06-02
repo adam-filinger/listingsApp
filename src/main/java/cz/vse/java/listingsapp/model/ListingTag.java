@@ -9,11 +9,11 @@ import jakarta.persistence.Table;
 /**
  * Represents a tag for a listing.
  * @author Adam Filinger
- * @version 1.0
+ * @version 1.1
  */
 @Entity
-@Table(name = "tag")
-public class Tag {
+@Table(name = "listing_tag")
+public class ListingTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

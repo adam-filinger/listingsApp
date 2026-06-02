@@ -3,11 +3,12 @@ package cz.vse.java.listingsapp.controller;
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
-import cz.vse.java.listingsapp.service.ListingService;
+import cz.vse.java.listingsapp.service.OfferService;
 import cz.vse.java.listingsapp.service.UserService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Controller for the listing detail view.
  * @author Adam Filinger
- * @version 1.3
+ * @version 1.6
  */
 public class ListingDetailController extends Controller {
 
@@ -45,7 +46,7 @@ public class ListingDetailController extends Controller {
     private Poptavka listing;
     private Uzivatel user;
     private UserService userService = new UserService();
-    private ListingService listingService = new ListingService();
+    private OfferService offerService = new OfferService();
 
     @Override
     public void onView(Poptavka listing, Uzivatel user) {
@@ -77,10 +78,18 @@ public class ListingDetailController extends Controller {
 
     private void loadOffers() {
         offersContainer.getChildren().clear();
-        List<Nabidka> offers = listingService.getOffersForListing(listing);
+        List<Nabidka> offers;
+
+        boolean isListingOwner = user.getId() == listing.getPravnickaOsoba().getUzivatel().getId();
+
+        if (isListingOwner) {
+            offers = offerService.getOffersForListing(listing);
+        } else {
+            offers = offerService.getOffersForListingByUser(listing, user);
+        }
 
         if (offers.isEmpty()) {
-            Label noOffersLabel = new Label("No offers have been made for this listing yet.");
+            Label noOffersLabel = new Label("No offers to display.");
             offersContainer.getChildren().add(noOffersLabel);
             return;
         }
@@ -93,6 +102,14 @@ public class ListingDetailController extends Controller {
     private VBox createOfferCard(Nabidka offer) {
         VBox card = new VBox(5);
         card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #DDDDDD; -fx-border-radius: 3; -fx-padding: 10;");
+
+        card.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (mainController != null) {
+                    mainController.showOfferDetail(offer);
+                }
+            }
+        });
 
         Label userLabel = new Label("Offer from: " + offer.getUzivatel().getName());
         userLabel.setFont(new Font("System Bold", 14));

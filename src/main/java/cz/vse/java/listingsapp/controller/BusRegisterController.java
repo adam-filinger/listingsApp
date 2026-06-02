@@ -6,6 +6,7 @@ import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.model.validators.CustomValidator;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
+import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.UserService;
@@ -19,6 +20,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,9 +32,11 @@ import java.util.regex.Pattern;
 /**
  * Controller for the business registration view.
  * @author Adam Filinger
- * @version 1.1
+ * @version 1.2
  */
 public class BusRegisterController extends Controller implements Initializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(BusRegisterController.class);
 
     @FXML
     private VBox formContainer;
@@ -41,19 +46,6 @@ public class BusRegisterController extends Controller implements Initializable {
     private UserService userService;
     private Uzivatel user;
 
-    /**
-     * Sets the user for the controller.
-     * @param user The user.
-     */
-    public void setUser(Uzivatel user) {
-        this.user = user;
-    }
-
-    /**
-     * Initializes the controller class.
-     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
-     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
-     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         userService = new UserService();
@@ -94,10 +86,12 @@ public class BusRegisterController extends Controller implements Initializable {
 
         formContainer.getChildren().add(new FormRenderer(form));
     }
+    
+    @Override
+    void onView(Uzivatel user) {
+        this.user = user;
+    }
 
-    /**
-     * Handles the register button action.
-     */
     @FXML
     private void register() {
         form.persist();
@@ -114,16 +108,15 @@ public class BusRegisterController extends Controller implements Initializable {
         pravnickaOsoba.setTel(businessForm.telProperty().get());
         pravnickaOsoba.setUzivatel(user);
 
-        if (userService.saveBusiness(pravnickaOsoba)) {
+        try {
+            userService.saveBusiness(pravnickaOsoba);
             showSuccessDialog();
-        } else {
+        } catch (Exception e) {
+            logger.error("Failed to register business", e);
             showErrorDialog();
         }
     }
 
-    /**
-     * Handles the go to main menu button action.
-     */
     @FXML
     private void goToMainMenu() {
         try {
@@ -138,12 +131,6 @@ public class BusRegisterController extends Controller implements Initializable {
         }
     }
 
-    /**
-     * Shows an alert dialog.
-     * @param alertType The type of the alert.
-     * @param title The title of the alert.
-     * @param message The message of the alert.
-     */
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -152,9 +139,6 @@ public class BusRegisterController extends Controller implements Initializable {
         alert.showAndWait();
     }
 
-    /**
-     * Shows a success dialog.
-     */
     private void showSuccessDialog() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
@@ -170,9 +154,6 @@ public class BusRegisterController extends Controller implements Initializable {
         delay.play();
     }
 
-    /**
-     * Shows an error dialog.
-     */
     private void showErrorDialog() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");

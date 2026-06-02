@@ -24,6 +24,7 @@
                         <MenuItem fx:id="myListingsMenuItem" mnemonicParsing="false" text="My Listings" onAction="#handleShowMyListings" />
                         <MenuItem fx:id="offersMenuItem" mnemonicParsing="false" text="See All Offers" onAction="#handleShowOffers" />
                         <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="editProfileMenuItem" mnemonicParsing="false" text="Edit Profile" onAction="#handleEditProfile" />
                         <MenuItem fx:id="registerBusinessMenuItem" mnemonicParsing="false" text="Register as Business" onAction="#handleRegisterBusiness" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="logoutMenuItem" mnemonicParsing="false" text="Logout" onAction="#handleLogout" />

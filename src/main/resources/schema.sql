@@ -26,22 +26,23 @@ CREATE TABLE IF NOT EXISTS Poptavka (
     price DOUBLE,
     created_date DATE,
     version INT,
+    category VARCHAR(255),
     FOREIGN KEY (ICO) REFERENCES PRAVNICKA_OSOBA(ICO)
 );
 
--- Tag Table
-CREATE TABLE IF NOT EXISTS Tag (
+-- ListingTag Table
+CREATE TABLE IF NOT EXISTS listing_tag (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE
 );
 
--- Poptavka_Tag Table
-CREATE TABLE IF NOT EXISTS Poptavka_Tag (
+-- poptavka_listing_tag Table
+CREATE TABLE IF NOT EXISTS poptavka_listing_tag (
     poptavka_id INT,
-    tag_id INT,
-    PRIMARY KEY (poptavka_id, tag_id),
+    listing_tag_id INT,
+    PRIMARY KEY (poptavka_id, listing_tag_id),
     FOREIGN KEY (poptavka_id) REFERENCES Poptavka(ID),
-    FOREIGN KEY (tag_id) REFERENCES Tag(ID)
+    FOREIGN KEY (listing_tag_id) REFERENCES listing_tag(ID)
 );
 
 -- Nabidka Table

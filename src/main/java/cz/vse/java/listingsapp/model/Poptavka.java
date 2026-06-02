@@ -2,11 +2,12 @@ package cz.vse.java.listingsapp.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Represents a listing created by a legal entity.
  * @author Adam Filinger
- * @version 1.1
+ * @version 1.2
  */
 @Entity
 @Table(name = "poptavka")
@@ -31,106 +32,91 @@ public class Poptavka {
 
     private double price;
 
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
+    @ManyToMany
+    @JoinTable(
+            name = "poptavka_listing_tag",
+            joinColumns = @JoinColumn(name = "poptavka_id"),
+            inverseJoinColumns = @JoinColumn(name = "listing_tag_id")
+    )
+    private Set<ListingTag> tags;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = false, updatable = false)
     private Date createdDate;
 
     // Getters and Setters
 
-    /**
-     * @return the id of the listing
-     */
     public int getId() {
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(int id) {
         this.id = id;
     }
 
-    /**
-     * @return the version of the entity
-     */
     public int getVersion() {
         return version;
     }
 
-    /**
-     * @param version the version to set
-     */
     public void setVersion(int version) {
         this.version = version;
     }
 
-    /**
-     * @return the legal entity that created the listing
-     */
     public PravnickaOsoba getPravnickaOsoba() {
         return pravnickaOsoba;
     }
 
-    /**
-     * @param pravnickaOsoba the legal entity to set
-     */
     public void setPravnickaOsoba(PravnickaOsoba pravnickaOsoba) {
         this.pravnickaOsoba = pravnickaOsoba;
     }
 
-    /**
-     * @return the name of the listing
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * @param name the name to set
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * @return the description of the listing
-     */
     public String getDescription() {
         return description;
     }
 
-    /**
-     * @param description the description to set
-     */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /**
-     * @return the price of the listing
-     */
     public double getPrice() {
         return price;
     }
 
-    /**
-     * @param price the price to set
-     */
     public void setPrice(double price) {
         this.price = price;
     }
 
-    /**
-     * @return the creation date of the listing
-     */
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Set<ListingTag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<ListingTag> tags) {
+        this.tags = tags;
+    }
+
     public Date getCreatedDate() {
         return createdDate;
     }
 
-    /**
-     * @param createdDate the creation date to set
-     */
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }

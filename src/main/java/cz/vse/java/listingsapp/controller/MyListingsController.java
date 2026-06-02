@@ -1,13 +1,9 @@
 package cz.vse.java.listingsapp.controller;
 
-import cz.vse.java.listingsapp.model.Category;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.ListingService;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
@@ -15,62 +11,35 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
- * Controller for displaying all listings.
+ * Controller for displaying the user's listings.
  * @author Adam Filinger
- * @version 1.7
+ * @version 1.0
  */
-public class AllListingsController extends Controller implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(AllListingsController.class);
+public class MyListingsController extends Controller {
 
     @FXML
     private VBox listingsContainer;
-    @FXML
-    private ComboBox<Category> categoryFilter;
 
-    private ListingService listingService;
     private Uzivatel user;
+    private ListingService listingService = new ListingService();
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        listingService = new ListingService();
-        categoryFilter.setItems(FXCollections.observableArrayList(Category.values()));
-        categoryFilter.getItems().addFirst(null); // Add a "null" option to show all
-        categoryFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            loadListings(newVal);
-        });
-    }
-    
-    @Override
-    void onView( Uzivatel user) {
+    void onView(Poptavka listing, Uzivatel user) {
         this.user = user;
-        loadListings(null);
+        loadListings();
     }
 
-    private void loadListings(Category category) {
+    private void loadListings() {
         listingsContainer.getChildren().clear();
-        List<Poptavka> listings;
-        if(mainController.getCurrentViewName().equals("myListings")) {
-            listings = listingService.getListings(user);
-        } else if(category != null) {
-            listings = listingService.getListings(category);
-        }else{
-            listings = listingService.getListings();
-        }
-
+        List<Poptavka> listings = listingService.getListings(user);
 
         if (listings.isEmpty()) {
-            Label noListingsLabel = new Label("No listings available at the moment.");
-            noListingsLabel.setFont(new Font(16));
+            Label noListingsLabel = new Label("You haven't created any listings yet.");
             listingsContainer.getChildren().add(noListingsLabel);
             return;
         }
@@ -115,7 +84,6 @@ public class AllListingsController extends Controller implements Initializable {
         footerPane.getChildren().addAll(companyLabel, footerSpacer, dateLabel);
 
         card.getChildren().addAll(titlePane, descriptionLabel, footerPane);
-
         return card;
     }
 }

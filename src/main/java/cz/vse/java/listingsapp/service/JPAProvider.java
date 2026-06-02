@@ -2,12 +2,14 @@ package cz.vse.java.listingsapp.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.Persistence;
+import java.util.function.Consumer;
 
 /**
- * Provides a singleton instance of the JPA EntityManagerFactory.
+ * Provides a singleton instance of the JPA EntityManagerFactory and handles transactions.
  * @author Adam Filinger
- * @version 1.0
+ * @version 1.1
  */
 public class JPAProvider {
 
@@ -20,7 +22,6 @@ public class JPAProvider {
      */
     private JPAProvider() {
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-        // Add a shutdown hook to close the EntityManagerFactory
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
     }
 
@@ -45,6 +46,31 @@ public class JPAProvider {
      */
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
+    }
+
+    /**
+     * Executes a block of code within a JPA transaction.
+     * @param action The block of code to execute.
+     */
+    public void withTransaction(Consumer<EntityManager> action) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            action.accept(em);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            if (e instanceof OptimisticLockException){
+                throw new OptimisticLockException("Optimistic lock failed", e);
+            } else{
+                // Re-throw or handle the exception as needed
+                throw new RuntimeException("Transaction failed", e);
+            }
+        } finally {
+            em.close();
+        }
     }
 
     /**

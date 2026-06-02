@@ -1,5 +1,6 @@
 package cz.vse.java.listingsapp.controller;
 
+import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import javafx.fxml.FXML;
@@ -21,7 +22,7 @@ import java.util.Map;
 /**
  * Controller for the main view of the application after login.
  * @author Adam Filinger
- * @version 2.8
+ * @version 3.1
  */
 public class MainViewController {
     
@@ -40,6 +41,8 @@ public class MainViewController {
     @FXML
     private MenuItem logoutMenuItem;
     @FXML
+    private MenuItem editProfileMenuItem;
+    @FXML
     private StackPane contentPane;
 
     private Uzivatel user;
@@ -54,15 +57,20 @@ public class MainViewController {
     private void initialize() {
         viewPaths.put("allListings", "/cz/vse/java/listingsapp/view/all-listings-view.fxml");
         viewPaths.put("addListing", "/cz/vse/java/listingsapp/view/add-listing-view.fxml");
-        viewPaths.put("myListings", "/cz/vse/java/listingsapp/view/my-listings-view.fxml");
+        viewPaths.put("myListings", "/cz/vse/java/listingsapp/view/all-listings-view.fxml");
         viewPaths.put("myOffers", "/cz/vse/java/listingsapp/view/my-offers-view.fxml");
         viewPaths.put("registerBusiness", "/cz/vse/java/listingsapp/view/bus_register-view.fxml");
         viewPaths.put("listingDetail", "/cz/vse/java/listingsapp/view/listing-detail-view.fxml");
         viewPaths.put("editListing", "/cz/vse/java/listingsapp/view/edit-listing-view.fxml");
         viewPaths.put("createOffer", "/cz/vse/java/listingsapp/view/create-offer-view.fxml");
+        viewPaths.put("offerDetail", "/cz/vse/java/listingsapp/view/offer-detail-view.fxml");
+        viewPaths.put("editOffer", "/cz/vse/java/listingsapp/view/edit-offer-view.fxml");
+        viewPaths.put("editProfile", "/cz/vse/java/listingsapp/view/edit-profile-view.fxml");
+
+        currentView = "allListings";
     }
 
-    private void switchView(String viewName, Poptavka listing) {
+    private void switchView(String viewName, Object data) {
         contentPane.getChildren().clear();
 
         if (viewMap.containsKey(viewName)) {
@@ -71,12 +79,18 @@ public class MainViewController {
         } else {
             loadView(viewName);
         }
+        currentView = viewName;
         try{
-            controllerMap.get(viewName).onView(listing, user);
+            if (data instanceof Poptavka) {
+                controllerMap.get(viewName).onView((Poptavka) data, user);
+            } else if (data instanceof Nabidka) {
+                controllerMap.get(viewName).onView((Nabidka) data, user);
+            } else {
+                controllerMap.get(viewName).onView(user);
+            }
         } catch (Exception e) {
             logger.error("Error calling onView for {}", viewName, e);
         }
-        currentView = viewName;
     }
 
     private void loadView(String viewName) {
@@ -93,16 +107,8 @@ public class MainViewController {
             
             Controller controller = fxmlLoader.getController();
             if (controller != null) {
-                try {
-                    Method setUserMethod = controller.getClass().getMethod("setUser", Uzivatel.class);
-                    setUserMethod.invoke(controller, user);
-                } catch (NoSuchMethodException e) {
-                    // It's okay if the controller doesn't have a setUser method
-                } catch (Exception e) {
-                    logger.error("Error setting user in controller for {}", viewPath, e);
-                }
                 controllerMap.put(viewName, controller);
-                controllerMap.get(viewName).setMainController(this);
+                controller.setMainController(this);
             }
             
             viewMap.put(viewName, pane);
@@ -113,20 +119,12 @@ public class MainViewController {
         }
     }
 
-    /**
-     * Sets the user and their business status.
-     * @param user The user.
-     * @param isBusiness Whether the user is a business.
-     */
     public void setUser(Uzivatel user, boolean isBusiness) {
         this.user = user;
         this.isBusiness = isBusiness;
         updateUI();
     }
 
-    /**
-     * Updates the UI based on the user's business status.
-     */
     private void updateUI() {
         if (isBusiness) {
             registerBusinessMenuItem.setVisible(false);
@@ -144,51 +142,38 @@ public class MainViewController {
         alert.showAndWait();
     }
 
-    /**
-     * Handles the "Show All Listings" button action.
-     */
     @FXML
     private void handleShowAllListings() {
         switchView("allListings", null);
     }
 
-    /**
-     * Handles the "Add Listing" button action.
-     */
     @FXML
     private void handleAddListing() {
         switchView("addListing", null);
     }
 
-    /**
-     * Handles the "Show My Listings" button action.
-     */
     @FXML
     private void handleShowMyListings() {
         switchView("myListings", null);
     }
 
-    /**
-     * Handles the "Show Offers" button action.
-     */
     @FXML
     private void handleShowOffers() {
         switchView("myOffers", null);
     }
 
-    /**
-     * Handles the "Register Business" button action.
-     */
     @FXML
     private void handleRegisterBusiness() {
         switchView("registerBusiness", null);
     }
-
-    /**
-     * Handles the "Logout" button action.
-     */
+    
     @FXML
-    private void handleLogout() {
+    private void handleEditProfile() {
+        switchView("editProfile", null);
+    }
+
+    @FXML
+    public void handleLogout() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cz/vse/java/listingsapp/view/login-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 800, 600);
@@ -200,31 +185,31 @@ public class MainViewController {
         }
     }
 
-    /**
-     * Shows the listing detail view.
-     * @param listing The listing to display.
-     */
     public void showListingDetail(Poptavka listing) {
         switchView("listingDetail", listing);
     }
 
-    /**
-     * Shows the edit listing view.
-     * @param listing The listing to edit.
-     */
     public void showEditListing(Poptavka listing) {
         switchView("editListing", listing);
     }
 
-    /**
-     * Shows the create offer view.
-     * @param listing The listing to make an offer on.
-     */
     public void showCreateOfferView(Poptavka listing) {
         switchView("createOffer", listing);
     }
 
+    public void showOfferDetail(Nabidka offer) {
+        switchView("offerDetail", offer);
+    }
+
+    public void showEditOffer(Nabidka offer) {
+        switchView("editOffer", offer);
+    }
+
     public void onView() {
         handleShowAllListings();
+    }
+
+    public String getCurrentViewName(){
+        return currentView;
     }
 }

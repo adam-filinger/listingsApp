@@ -3,9 +3,10 @@ package cz.vse.java.listingsapp.controller;
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
-import cz.vse.java.listingsapp.service.ListingService;
+import cz.vse.java.listingsapp.service.OfferService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Controller for displaying the user's offers.
  * @author Adam Filinger
- * @version 1.0
+ * @version 1.2
  */
 public class MyOffersController extends Controller {
 
@@ -22,7 +23,7 @@ public class MyOffersController extends Controller {
     private VBox offersContainer;
 
     private Uzivatel user;
-    private ListingService listingService = new ListingService();
+    private OfferService offerService = new OfferService();
 
     @Override
     void onView(Poptavka listing, Uzivatel user) {
@@ -32,7 +33,7 @@ public class MyOffersController extends Controller {
 
     private void loadOffers() {
         offersContainer.getChildren().clear();
-        List<Nabidka> offers = listingService.getOffersByUser(user);
+        List<Nabidka> offers = offerService.getOffersByUser(user);
 
         if (offers.isEmpty()) {
             Label noOffersLabel = new Label("You haven't made any offers yet.");
@@ -48,6 +49,14 @@ public class MyOffersController extends Controller {
     private VBox createOfferCard(Nabidka offer) {
         VBox card = new VBox(5);
         card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #DDDDDD; -fx-border-radius: 3; -fx-padding: 10;");
+
+        card.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (mainController != null) {
+                    mainController.showOfferDetail(offer);
+                }
+            }
+        });
 
         Label listingLabel = new Label("Offer for: " + offer.getPoptavka().getName());
         listingLabel.setFont(new Font("System Bold", 14));

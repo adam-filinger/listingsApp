@@ -4,7 +4,7 @@ import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.StatusNabidky;
 import cz.vse.java.listingsapp.model.Uzivatel;
-import cz.vse.java.listingsapp.service.ListingService;
+import cz.vse.java.listingsapp.service.OfferService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller for creating an offer on a listing.
  * @author Adam Filinger
- * @version 1.0
+ * @version 1.2
  */
 public class CreateOfferController extends Controller {
 
@@ -31,20 +31,12 @@ public class CreateOfferController extends Controller {
 
     private Poptavka listing;
     private Uzivatel user;
-    private ListingService listingService;
+    private OfferService offerService;
 
-    /**
-     * Initializes the controller.
-     */
     public void initialize() {
-        listingService = new ListingService();
+        offerService = new OfferService();
     }
 
-    /**
-     * Sets the listing and user for the offer.
-     * @param listing The listing to make an offer on.
-     * @param user The user making the offer.
-     */
     @Override
     void onView(Poptavka listing, Uzivatel user) {
         this.listing = listing;
@@ -52,9 +44,6 @@ public class CreateOfferController extends Controller {
         listingTitleLabel.setText("For Listing: '" + listing.getName() + "'");
     }
 
-    /**
-     * Handles the "Submit Offer" button action.
-     */
     @FXML
     private void handleSubmitOffer() {
         try {
@@ -65,12 +54,9 @@ public class CreateOfferController extends Controller {
             offer.setProposedPrice(Double.parseDouble(priceField.getText()));
             offer.setStatus(StatusNabidky.NOVA);
 
-            if (listingService.saveNabidka(offer)) {
-                showSuccessAlert();
-                mainController.showListingDetail(listing);
-            } else {
-                showErrorAlert("Failed to save the offer.");
-            }
+            offerService.saveNabidka(offer);
+            showSuccessAlert();
+            mainController.showListingDetail(listing);
         } catch (NumberFormatException e) {
             showErrorAlert("Invalid price format.");
         } catch (Exception e) {
@@ -79,18 +65,11 @@ public class CreateOfferController extends Controller {
         }
     }
 
-    /**
-     * Handles the "Cancel" button action.
-     */
     @FXML
     private void handleCancel() {
         mainController.showListingDetail(listing);
     }
 
-    /**
-     * Shows an error alert.
-     * @param message The error message.
-     */
     private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -99,9 +78,6 @@ public class CreateOfferController extends Controller {
         alert.showAndWait();
     }
 
-    /**
-     * Shows a success alert.
-     */
     private void showSuccessAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");

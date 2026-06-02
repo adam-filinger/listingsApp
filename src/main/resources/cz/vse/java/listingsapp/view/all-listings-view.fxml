@@ -6,12 +6,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 
 <BorderPane style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="cz.vse.java.listingsapp.controller.AllListingsController">
 
     <top>
-        <VBox alignment="CENTER">
+        <VBox alignment="CENTER" spacing="10">
             <padding>
                 <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
@@ -20,6 +21,7 @@
                     <Font name="System Bold" size="24.0" />
                 </font>
             </Label>
+            <ComboBox fx:id="categoryFilter" promptText="Filter by category" />
         </VBox>
     </top>
 
