@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
  * @author Adam Filinger
  * @version 1.1
  */
-public class LoginController implements Initializable {
+public class LoginController extends Controller implements Initializable {
 
     @FXML
     public BorderPane rootPane;

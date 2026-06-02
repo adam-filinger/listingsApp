@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
  * @author Adam Filinger
  * @version 1.4
  */
-public class AllListingsController implements Initializable, Controller {
+public class AllListingsController extends Controller implements Initializable {
 
     private static final Logger logger = LoggerFactory.getLogger(AllListingsController.class);
 
@@ -36,7 +36,6 @@ public class AllListingsController implements Initializable, Controller {
 
     private ListingService listingService;
     private Uzivatel user;
-    private MainViewController mainViewController;
 
     /**
      * Initializes the controller class.
@@ -62,14 +61,6 @@ public class AllListingsController implements Initializable, Controller {
      */
     public void setUser(Uzivatel user) {
         this.user = user;
-    }
-
-    /**
-     * Sets the main view controller.
-     * @param mainViewController The main view controller.
-     */
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
     }
 
     /**
@@ -102,8 +93,8 @@ public class AllListingsController implements Initializable, Controller {
 
         card.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                if (mainViewController != null) {
-                    mainViewController.showListingDetail(listing);
+                if (mainController != null) {
+                    mainController.showListingDetail(listing);
                 }
             }
         });
@@ -148,8 +139,4 @@ public class AllListingsController implements Initializable, Controller {
         logger.info("User wants to make an offer on listing: " + listing.getName());
     }
 
-    @Override
-    public void onView() {
-
-    }
 }

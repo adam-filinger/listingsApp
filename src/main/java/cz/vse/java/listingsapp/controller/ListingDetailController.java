@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
  * @author Adam Filinger
  * @version 1.1
  */
-public class ListingDetailController implements Controller {
+public class ListingDetailController extends Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(ListingDetailController.class);
 
@@ -105,7 +105,7 @@ public class ListingDetailController implements Controller {
     }
 
     @Override
-    public void onView() {
+    public void onView(Poptavka listing, Uzivatel user) {
         setListing(listing, user);
     }
 }

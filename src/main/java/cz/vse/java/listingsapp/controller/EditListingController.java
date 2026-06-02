@@ -1,6 +1,7 @@
 package cz.vse.java.listingsapp.controller;
 
 import cz.vse.java.listingsapp.model.Poptavka;
+import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.ListingService;
 import jakarta.persistence.OptimisticLockException;
 import javafx.fxml.FXML;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author Adam Filinger
  * @version 1.0
  */
-public class EditListingController implements Controller {
+public class EditListingController extends Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(EditListingController.class);
 
@@ -111,7 +112,7 @@ public class EditListingController implements Controller {
     }
 
     @Override
-    public void onView() {
-
+    public void onView(Poptavka listing, Uzivatel user) {
+        setListing(listing);
     }
 }

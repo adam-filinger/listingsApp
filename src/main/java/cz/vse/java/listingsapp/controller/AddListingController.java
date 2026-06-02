@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
  * @author Adam Filinger
  * @version 1.1
  */
-public class AddListingController implements Initializable, Controller {
+public class AddListingController extends Controller implements Initializable  {
 
     private static final Logger logger = LoggerFactory.getLogger(AddListingController.class);
 
@@ -221,8 +221,4 @@ public class AddListingController implements Initializable, Controller {
         alert.showAndWait();
     }
 
-    @Override
-    public void onView() {
-            // No specific action needed when the view is shown
-    }
 }

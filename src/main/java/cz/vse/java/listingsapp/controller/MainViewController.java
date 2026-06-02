@@ -69,15 +69,18 @@ public class MainViewController {
         if (viewMap.containsKey(viewName)) {
             Pane pane = viewMap.get(viewName);
             contentPane.getChildren().add(pane);
-            controllerMap.get(viewName).onView();
         } else {
-            loadView(viewName, listing);
+            loadView(viewName);
         }
-
+        try{
+            controllerMap.get(viewName).onView(listing, user);
+        } catch (Exception e) {
+            logger.error("Error calling onView for {}", viewName, e);
+        }
         currentView = viewName;
     }
 
-    private void loadView(String viewName, Poptavka listing) {
+    private void loadView(String viewName) {
         try {
             String viewPath = viewPaths.get(viewName);
             
@@ -89,38 +92,21 @@ public class MainViewController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(viewPath));
             Pane pane = fxmlLoader.load();
             
-            Object controller = fxmlLoader.getController();
+            Controller controller = fxmlLoader.getController();
             if (controller != null) {
                 try {
                     Method setUserMethod = controller.getClass().getMethod("setUser", Uzivatel.class);
                     setUserMethod.invoke(controller, user);
+                    controllerMap.put(viewName, controller);
+                    controllerMap.get(viewName).setMainController(this);
                 } catch (NoSuchMethodException e) {
                     // It's okay if the controller doesn't have a setUser method
                 } catch (Exception e) {
                     logger.error("Error setting user in controller for {}", viewPath, e);
                 }
-
-                if (controller instanceof AllListingsController) {
-                    ((AllListingsController) controller).setMainViewController(this);
-                }
-
-                if (controller instanceof ListingDetailController) {
-                    ((ListingDetailController) controller).setMainViewController(this);
-                    if (listing != null) {
-                        ((ListingDetailController) controller).setListing(listing, user);
-                    }
-                }
-
-                if (controller instanceof EditListingController) {
-                    ((EditListingController) controller).setMainViewController(this);
-                    if (listing != null) {
-                        ((EditListingController) controller).setListing(listing);
-                    }
-                }
             }
             
             viewMap.put(viewName, pane);
-            controllerMap.put(viewName, (Controller) controller);
             contentPane.getChildren().add(pane);
         } catch (IOException e) {
             logger.error("Failed to load view: {}", viewPaths.get(viewName), e);

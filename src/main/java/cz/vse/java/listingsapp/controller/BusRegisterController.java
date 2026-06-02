@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * @author Adam Filinger
  * @version 1.1
  */
-public class BusRegisterController implements Initializable, Controller {
+public class BusRegisterController extends Controller implements Initializable {
 
     @FXML
     private VBox formContainer;
@@ -188,10 +188,5 @@ public class BusRegisterController implements Initializable, Controller {
         if (result.isPresent() && result.get() == mainMenuButton) {
             goToMainMenu();
         }
-    }
-
-    @Override
-    public void onView() {
-
     }
 }
