@@ -41,4 +41,11 @@ public class BusinessForm {
     public StringProperty telProperty() {
         return tel;
     }
+
+    public void resetForm(){
+        ico.set("");
+        name.set("");
+        email.set("");
+        tel.set("");
+    }
 }

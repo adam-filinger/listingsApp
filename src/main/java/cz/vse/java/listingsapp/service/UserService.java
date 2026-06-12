@@ -78,7 +78,7 @@ public class UserService {
         }
     }
 
-    public void saveBusiness(PravnickaOsoba pravnickaOsoba) {
+    public void saveBusiness(PravnickaOsoba pravnickaOsoba) throws Exception {
         if (pravnickaOsoba == null) {
             return;
         }
@@ -99,7 +99,7 @@ public class UserService {
         }
     }
 
-    public void updateUser(Uzivatel user, PravnickaOsoba business) {
+    public void updateUser(Uzivatel user, PravnickaOsoba business) throws Exception {
         jpaProvider.withTransaction(em -> {
             em.merge(user);
             if (business != null) {
@@ -108,7 +108,7 @@ public class UserService {
         });
     }
 
-    public void deleteUser(Uzivatel user) {
+    public void deleteUser(Uzivatel user) throws Exception {
         jpaProvider.withTransaction(em -> {
             Uzivatel managedUser = em.merge(user);
             em.remove(managedUser);

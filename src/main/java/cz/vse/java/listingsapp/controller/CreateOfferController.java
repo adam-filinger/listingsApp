@@ -55,13 +55,13 @@ public class CreateOfferController extends Controller {
             offer.setStatus(StatusNabidky.NOVA);
 
             offerService.saveNabidka(offer);
-            showSuccessAlert();
+            showAlert(Alert.AlertType.INFORMATION, "Offer Submitted", "Your offer has been submitted successfully.");
             mainController.showListingDetail(listing);
         } catch (NumberFormatException e) {
-            showErrorAlert("Invalid price format.");
+            showAlert(Alert.AlertType.WARNING, "Invalid Price", "Please enter a valid number for the price.");
         } catch (Exception e) {
             logger.error("Failed to submit offer for listing: {}", listing.getId(), e);
-            showErrorAlert("An unexpected error occurred.");
+            showAlert(Alert.AlertType.ERROR, "Error", "An error occurred while submitting your offer. Please try again.");
         }
     }
 
@@ -70,19 +70,4 @@ public class CreateOfferController extends Controller {
         mainController.showListingDetail(listing);
     }
 
-    private void showErrorAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showSuccessAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText("Your offer has been submitted successfully.");
-        alert.showAndWait();
-    }
 }

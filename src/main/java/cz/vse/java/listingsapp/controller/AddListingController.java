@@ -13,10 +13,13 @@ import cz.vse.java.listingsapp.service.JPAProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
+import org.hibernate.engine.jdbc.connections.internal.ConnectionValidator;
+import org.hibernate.exception.JDBCConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,9 @@ public class AddListingController extends Controller implements Initializable  {
     @Override
     void onView(Uzivatel user) {
         this.user = user;
+        form.reset();
+        listingForm.resetForm();
+
     }
 
     private void buildForm() {
@@ -103,8 +109,7 @@ public class AddListingController extends Controller implements Initializable  {
             return;
         }
 
-        PravnickaOsoba pravnickaOsoba = getBusinessForUser(user);
-        if (pravnickaOsoba == null) {
+        if (mainController.getUser().getValue() == null) {
             showAlert(Alert.AlertType.ERROR, "Error", "Only business users can add listings.");
             return;
         }
@@ -115,7 +120,7 @@ public class AddListingController extends Controller implements Initializable  {
         poptavka.setPrice(listingForm.priceProperty().get());
         poptavka.setCategory(listingForm.categoryProperty().get());
         poptavka.setCreatedDate(new Date());
-        poptavka.setPravnickaOsoba(pravnickaOsoba);
+        poptavka.setPravnickaOsoba(mainController.getUser().getValue());
 
         Set<ListingTag> tags = Arrays.stream(listingForm.tagsProperty().get().split(","))
                 .map(String::trim)
@@ -132,31 +137,12 @@ public class AddListingController extends Controller implements Initializable  {
             listingService.savePoptavka(poptavka);
             showAlert(Alert.AlertType.INFORMATION, "Success", "Listing added successfully.");
             form.reset();
+        } catch (JDBCConnectionException e) {
+                logger.error("Database connection error while saving listing", e);
+                showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to connect to the database. Please check your connection and try again.");
         } catch (Exception e) {
             logger.error("Failed to add listing", e);
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to add listing.");
         }
-    }
-
-    private PravnickaOsoba getBusinessForUser(Uzivatel user) {
-        EntityManager em = JPAProvider.getInstance().getEntityManager();
-        try {
-            TypedQuery<PravnickaOsoba> query = em.createQuery(
-                    "SELECT p FROM PravnickaOsoba p WHERE p.uzivatel = :user", PravnickaOsoba.class);
-            query.setParameter("user", user);
-            return query.getSingleResult();
-        } catch (Exception e) {
-            return null;
-        } finally {
-            em.close();
-        }
-    }
-
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

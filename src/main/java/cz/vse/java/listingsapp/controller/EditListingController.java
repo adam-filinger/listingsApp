@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.hibernate.exception.JDBCConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,15 +72,20 @@ public class EditListingController extends Controller {
             // Navigate back to the detail view
             mainController.showListingDetail(listing);
         } catch (NumberFormatException e) {
-            showErrorAlert("Invalid price format.");
+            showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid price.");
         } catch (OptimisticLockException e) {
             logger.warn("Optimistic lock failed for listing: {}", listing.getId(), e);
-            showErrorAlert("This listing has been modified by another user. Please reload and try again.");
+            showAlert(Alert.AlertType.WARNING, "Update conflict", "This listing was modified by another user. Please refresh and try again.");
             // Optionally, refresh the listing data
             mainController.showListingDetail(listingService.findPoptavkaById(listing.getId()));
-        } catch (Exception e) {
+        }
+        catch(JDBCConnectionException e){
+            logger.error("JDBC connection failed while trying to update listing: {}", listing.getId(), e);
+            showAlert(Alert.AlertType.ERROR, "JDBC Connection Error", "JDBC connection failed, please try again.");
+        }
+        catch (Exception e) {
             logger.error("Failed to update listing: {}", listing.getId(), e);
-            showErrorAlert("Failed to update the listing.");
+            showAlert(Alert.AlertType.ERROR,"Update error.", "Failed to update listing");
         }
     }
 
@@ -91,17 +97,7 @@ public class EditListingController extends Controller {
         mainController.showListingDetail(listing);
     }
 
-    /**
-     * Shows an error alert.
-     * @param message The error message.
-     */
-    private void showErrorAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+
 
     @Override
     public void onView(Poptavka listing, Uzivatel user) {

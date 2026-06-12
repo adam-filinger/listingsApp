@@ -49,4 +49,15 @@ public class ListingForm {
     public StringProperty tagsProperty() {
         return tags;
     }
+
+    public void resetForm(){
+        nameProperty().set("");
+        descriptionProperty().set("");
+        priceProperty().set(0.0);
+        textProperty().set("");
+        proposedPriceProperty().set(0.0);
+        categoryProperty().set(null);
+        tagsProperty().set("");
+    }
+
 }

@@ -4,7 +4,15 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.Persistence;
+import javafx.concurrent.Task;
+import org.h2.jdbc.JdbcBatchUpdateException;
+import org.hibernate.exception.JDBCConnectionException;
+
+import java.sql.SQLException;
 import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a singleton instance of the JPA EntityManagerFactory and handles transactions.
@@ -13,6 +21,7 @@ import java.util.function.Consumer;
  */
 public class JPAProvider {
 
+    private final Logger logger = LoggerFactory.getLogger(JPAProvider.class);
     private static final String PERSISTENCE_UNIT_NAME = "listingsApp";
     private static volatile JPAProvider instance;
     private final EntityManagerFactory emf;
@@ -23,6 +32,7 @@ public class JPAProvider {
     private JPAProvider() {
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+
     }
 
     /**
@@ -52,7 +62,7 @@ public class JPAProvider {
      * Executes a block of code within a JPA transaction.
      * @param action The block of code to execute.
      */
-    public void withTransaction(Consumer<EntityManager> action) {
+    public void withTransaction(Consumer<EntityManager> action) throws Exception {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
@@ -64,14 +74,19 @@ public class JPAProvider {
             }
             if (e instanceof OptimisticLockException){
                 throw new OptimisticLockException("Optimistic lock failed", e);
-            } else{
+            }else if(e instanceof JDBCConnectionException){
+                logger.error("JDBC connection failed");
+                throw new JDBCConnectionException("JDBC connection failed", new SQLException("JDBC connection failed"));
+            }else{
                 // Re-throw or handle the exception as needed
-                throw new RuntimeException("Transaction failed", e);
+                throw new Exception("Transaction failed", e);
             }
         } finally {
             em.close();
         }
+
     }
+
 
     /**
      * Closes the EntityManagerFactory.

@@ -16,7 +16,7 @@
             <padding>
                 <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
-            <Label text="All Listings">
+            <Label fx:id="listingsTitle" text="All Listings">
                 <font>
                     <Font name="System Bold" size="24.0" />
                 </font>

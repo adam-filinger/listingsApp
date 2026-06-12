@@ -90,6 +90,8 @@ public class BusRegisterController extends Controller implements Initializable {
     @Override
     void onView(Uzivatel user) {
         this.user = user;
+        businessForm.resetForm();
+        form.reset();
     }
 
     @FXML
@@ -123,20 +125,12 @@ public class BusRegisterController extends Controller implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cz/vse/java/listingsapp/view/main-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 800, 600);
             MainViewController mainViewController = fxmlLoader.getController();
-            mainViewController.setUser(user, userService.isBusiness(user));
+            mainViewController.setUser(user);
             Stage stage = (Stage) formContainer.getScene().getWindow();
             stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     private void showSuccessDialog() {

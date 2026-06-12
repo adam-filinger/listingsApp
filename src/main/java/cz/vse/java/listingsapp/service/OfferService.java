@@ -29,7 +29,7 @@ public class OfferService {
      * Saves a new offer to the database.
      * @param nabidka The offer to save.
      */
-    public void saveNabidka(Nabidka nabidka) {
+    public void saveNabidka(Nabidka nabidka) throws Exception {
         if (nabidka == null) {
             return;
         }
@@ -40,7 +40,7 @@ public class OfferService {
      * Updates an existing offer in the database.
      * @param nabidka The offer to update.
      */
-    public void updateNabidka(Nabidka nabidka) {
+    public void updateNabidka(Nabidka nabidka) throws Exception {
         if (nabidka == null) {
             return;
         }

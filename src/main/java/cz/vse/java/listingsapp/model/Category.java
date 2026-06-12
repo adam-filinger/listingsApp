@@ -11,5 +11,6 @@ public enum Category {
     VEHICLES,
     CLOTHING,
     BOOKS,
-    OTHER
+    OTHER,
+    ALL
 }

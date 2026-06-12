@@ -14,6 +14,7 @@ module cz.vse.java.listingsapp.listingsapp {
     requires ch.qos.logback.classic;
     requires org.slf4j;
     requires annotations;
+    requires com.h2database;
 
     opens cz.vse.java.listingsapp.model to org.hibernate.orm.core;
     opens cz.vse.java.listingsapp.controller to javafx.fxml;

@@ -85,7 +85,7 @@ public class LoginController extends Controller implements Initializable {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cz/vse/java/listingsapp/view/main-view.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 800, 600);
                 MainViewController mainViewController = fxmlLoader.getController();
-                mainViewController.setUser(user, isBusiness);
+                mainViewController.setUser(user);
                 mainViewController.onView();
                 Stage stage = (Stage) rootPane.getScene().getWindow();
                 stage.setScene(scene);
@@ -120,7 +120,7 @@ public class LoginController extends Controller implements Initializable {
      * @param title The title of the alert.
      * @param message The message of the alert.
      */
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
+    void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);

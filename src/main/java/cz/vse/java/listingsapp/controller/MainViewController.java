@@ -2,7 +2,9 @@ package cz.vse.java.listingsapp.controller;
 
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
+import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
+import cz.vse.java.listingsapp.service.UserService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,6 +13,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,13 +48,12 @@ public class MainViewController {
     @FXML
     private StackPane contentPane;
 
-    private Uzivatel user;
-    private boolean isBusiness;
+    private Pair<Uzivatel, PravnickaOsoba> user;
 
     private final Map<String, Pane> viewMap = new HashMap<>();
     private final Map<String, Controller> controllerMap = new HashMap<>();
     private final Map<String, String> viewPaths = new HashMap<>();
-    private String currentView;
+    private String currentView = "allListings";
 
     @FXML
     private void initialize() {
@@ -66,8 +68,6 @@ public class MainViewController {
         viewPaths.put("offerDetail", "/cz/vse/java/listingsapp/view/offer-detail-view.fxml");
         viewPaths.put("editOffer", "/cz/vse/java/listingsapp/view/edit-offer-view.fxml");
         viewPaths.put("editProfile", "/cz/vse/java/listingsapp/view/edit-profile-view.fxml");
-
-        currentView = "allListings";
     }
 
     private void switchView(String viewName, Object data) {
@@ -81,12 +81,11 @@ public class MainViewController {
         }
         currentView = viewName;
         try{
-            if (data instanceof Poptavka) {
-                controllerMap.get(viewName).onView((Poptavka) data, user);
-            } else if (data instanceof Nabidka) {
-                controllerMap.get(viewName).onView((Nabidka) data, user);
-            } else {
-                controllerMap.get(viewName).onView(user);
+            switch (data) {
+                case Poptavka poptavka -> controllerMap.get(viewName).onView(poptavka, user.getKey());
+                case Nabidka nabidka -> controllerMap.get(viewName).onView(nabidka, user.getKey());
+                case null -> controllerMap.get(viewName).onView(user.getKey());
+                default -> throw new IllegalStateException("Unexpected value: " + data);
             }
         } catch (Exception e) {
             logger.error("Error calling onView for {}", viewName, e);
@@ -119,14 +118,19 @@ public class MainViewController {
         }
     }
 
-    public void setUser(Uzivatel user, boolean isBusiness) {
-        this.user = user;
-        this.isBusiness = isBusiness;
+    public void setUser(Uzivatel user) {
+        UserService userService = new UserService();
+        if(userService.isBusiness(user)) {
+            PravnickaOsoba po = userService.getBusinessForUser(user);
+            this.user = new Pair<>(user, po);
+        }else{
+            this.user = new Pair<>(user, null);
+        }
         updateUI();
     }
 
     private void updateUI() {
-        if (isBusiness) {
+        if (user.getValue() != null) {
             registerBusinessMenuItem.setVisible(false);
         } else {
             addListingMenuItem.setVisible(false);
@@ -211,5 +215,9 @@ public class MainViewController {
 
     public String getCurrentViewName(){
         return currentView;
+    }
+
+    public Pair<Uzivatel, PravnickaOsoba> getUser() {
+        return user;
     }
 }

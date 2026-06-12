@@ -25,6 +25,9 @@ public class MyListingsController extends Controller {
     @FXML
     private VBox listingsContainer;
 
+    @FXML
+
+
     private Uzivatel user;
     private ListingService listingService = new ListingService();
 
