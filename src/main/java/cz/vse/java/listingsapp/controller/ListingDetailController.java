@@ -10,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +44,8 @@ public class ListingDetailController extends Controller {
 
     private Poptavka listing;
     private Uzivatel user;
-    private UserService userService = new UserService();
-    private OfferService offerService = new OfferService();
+    private final UserService userService = new UserService();
+    private final OfferService offerService = new OfferService();
 
     @Override
     public void onView(Poptavka listing, Uzivatel user) {
@@ -100,26 +99,14 @@ public class ListingDetailController extends Controller {
     }
 
     private VBox createOfferCard(Nabidka offer) {
-        VBox card = new VBox(5);
-        card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #DDDDDD; -fx-border-radius: 3; -fx-padding: 10;");
-
-        card.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                if (mainController != null) {
-                    mainController.showOfferDetail(offer);
-                }
-            }
-        });
-
-        Label userLabel = new Label("Offer from: " + offer.getUzivatel().getName());
-        userLabel.setFont(new Font("System Bold", 14));
-
-        Label priceLabel = new Label(String.format("Proposed Price: $%.2f", offer.getProposedPrice()));
-        Label messageLabel = new Label(offer.getText());
-        messageLabel.setWrapText(true);
-
-        card.getChildren().addAll(userLabel, priceLabel, messageLabel);
-        return card;
+       CardCreator cc = new CardCreator();
+       return cc.createOfferCard(offer, event -> {
+           if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+               if (mainController != null) {
+                   mainController.showOfferDetail(offer);
+               }
+           }
+       });
     }
 
     @FXML

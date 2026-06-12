@@ -6,27 +6,20 @@ import com.dlsc.formsfx.view.renderer.FormRenderer;
 import cz.vse.java.listingsapp.model.Category;
 import cz.vse.java.listingsapp.model.ListingTag;
 import cz.vse.java.listingsapp.model.Poptavka;
-import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.ListingService;
-import cz.vse.java.listingsapp.service.JPAProvider;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
-import org.hibernate.engine.jdbc.connections.internal.ConnectionValidator;
 import org.hibernate.exception.JDBCConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -119,7 +112,7 @@ public class AddListingController extends Controller implements Initializable  {
         poptavka.setDescription(listingForm.descriptionProperty().get());
         poptavka.setPrice(listingForm.priceProperty().get());
         poptavka.setCategory(listingForm.categoryProperty().get());
-        poptavka.setCreatedDate(new Date());
+        poptavka.setCreatedDate(LocalDateTime.now());
         poptavka.setPravnickaOsoba(mainController.getUser().getValue());
 
         Set<ListingTag> tags = Arrays.stream(listingForm.tagsProperty().get().split(","))

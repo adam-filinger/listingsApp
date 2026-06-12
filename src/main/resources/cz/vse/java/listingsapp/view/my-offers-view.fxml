@@ -4,14 +4,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.listingsapp.controller.MyOffersController"
+<VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cz.vse.java.listingsapp.controller.MyOffersController"
       spacing="15" style="-fx-background-color: #FAFAFA; -fx-padding: 20;">
-    <children>
-        <Label text="My Offers">
-            <font>
-                <Font name="System Bold" size="24.0" />
-            </font>
-        </Label>
-        <VBox fx:id="offersContainer" spacing="10" />
-    </children>
+    <Label text="My Offers">
+        <font>
+            <Font name="System Bold" size="24.0"/>
+        </font>
+    </Label>
+    <VBox fx:id="offersContainer" spacing="10"/>
 </VBox>

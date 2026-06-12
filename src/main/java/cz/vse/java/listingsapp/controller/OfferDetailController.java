@@ -1,7 +1,6 @@
 package cz.vse.java.listingsapp.controller;
 
 import cz.vse.java.listingsapp.model.Nabidka;
-import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.StatusNabidky;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.OfferService;
@@ -38,7 +37,7 @@ public class OfferDetailController extends Controller {
 
     private Nabidka offer;
     private Uzivatel user;
-    private OfferService offerService = new OfferService();
+    private final OfferService offerService = new OfferService();
 
     @Override
     void onView(Nabidka offer, Uzivatel user) {

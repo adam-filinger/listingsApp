@@ -5,8 +5,6 @@ import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import javafx.scene.control.Alert;
 
-import java.util.ArrayList;
-
 public abstract class Controller {
     MainViewController mainController;
 
@@ -38,7 +36,7 @@ public abstract class Controller {
 
     void setMainController(MainViewController controller){
         mainController = controller;
-    };
+    }
 
 
 

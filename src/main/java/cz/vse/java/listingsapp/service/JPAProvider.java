@@ -4,8 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.Persistence;
-import javafx.concurrent.Task;
-import org.h2.jdbc.JdbcBatchUpdateException;
 import org.hibernate.exception.JDBCConnectionException;
 
 import java.sql.SQLException;

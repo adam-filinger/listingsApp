@@ -7,78 +7,65 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.listingsapp.controller.ListingDetailController"
+<VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cz.vse.java.listingsapp.controller.ListingDetailController"
       spacing="15" style="-fx-background-color: #FAFAFA; -fx-padding: 20;">
-    <children>
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <children>
-                <Label fx:id="titleLabel" text="Listing Title" HBox.hgrow="ALWAYS">
-                    <font>
-                        <Font name="System Bold" size="24.0" />
-                    </font>
-                </Label>
-                <Label fx:id="priceLabel">
-                    <font>
-                        <Font name="System Bold" size="20.0" />
-                    </font>
-                </Label>
-            </children>
-        </HBox>
-        <VBox spacing="5">
-            <children>
-                <Label text="Description:">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Label>
-                <Label fx:id="descriptionLabel" text="Full description of the listing goes here..." wrapText="true" />
-            </children>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label fx:id="titleLabel" text="Listing Title" HBox.hgrow="ALWAYS">
+            <font>
+                <Font name="System Bold" size="24.0"/>
+            </font>
+        </Label>
+        <Label fx:id="priceLabel">
+            <font>
+                <Font name="System Bold" size="20.0"/>
+            </font>
+        </Label>
+    </HBox>
+    <VBox spacing="5">
+        <Label text="Description:">
+            <font>
+                <Font name="System Bold" size="14.0"/>
+            </font>
+        </Label>
+        <Label fx:id="descriptionLabel" text="Full description of the listing goes here..." wrapText="true"/>
+    </VBox>
+    <HBox spacing="20">
+        <VBox>
+            <Label text="Company:">
+                <font>
+                    <Font name="System Bold" size="14.0"/>
+                </font>
+            </Label>
+            <Label fx:id="companyLabel" text="Company Name"/>
         </VBox>
-        <HBox spacing="20">
-            <children>
-                <VBox>
-                    <children>
-                        <Label text="Company:">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="companyLabel" text="Company Name" />
-                    </children>
-                </VBox>
-                <VBox>
-                    <children>
-                        <Label text="Date Posted:">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="dateLabel" text="Jan 01, 2023" />
-                    </children>
-                </VBox>
-            </children>
-        </HBox>
-        <HBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS">
-            <children>
-                <Button fx:id="modifyButton" mnemonicParsing="false" onAction="#handleModify" text="Modify Listing" visible="false" />
-                <Button fx:id="makeOfferButton" mnemonicParsing="false" onAction="#handleMakeOffer" text="Make Offer" visible="false" />
-            </children>
-            <VBox.margin>
-                <Insets top="20.0" />
-            </VBox.margin>
-        </HBox>
-        <VBox spacing="10" VBox.vgrow="ALWAYS">
-            <children>
-                <Label text="Offers:">
-                    <font>
-                        <Font name="System Bold" size="18.0" />
-                    </font>
-                </Label>
-                <VBox fx:id="offersContainer" spacing="10" />
-            </children>
-            <VBox.margin>
-                <Insets top="20.0" />
-            </VBox.margin>
+        <VBox>
+            <Label text="Date Posted:">
+                <font>
+                    <Font name="System Bold" size="14.0"/>
+                </font>
+            </Label>
+            <Label fx:id="dateLabel" text="Jan 01, 2023"/>
         </VBox>
-    </children>
+    </HBox>
+    <HBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets top="20.0"/>
+        </VBox.margin>
+        <Button fx:id="modifyButton" mnemonicParsing="false" onAction="#handleModify" text="Modify Listing"
+                visible="false"/>
+        <Button fx:id="makeOfferButton" mnemonicParsing="false" onAction="#handleMakeOffer" text="Make Offer"
+                visible="false"/>
+    </HBox>
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets top="20.0"/>
+        </VBox.margin>
+        <Label text="Offers:">
+            <font>
+                <Font name="System Bold" size="18.0"/>
+            </font>
+        </Label>
+        <VBox fx:id="offersContainer" spacing="10"/>
+    </VBox>
 </VBox>

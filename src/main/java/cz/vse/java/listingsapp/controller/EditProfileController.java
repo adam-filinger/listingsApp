@@ -1,6 +1,5 @@
 package cz.vse.java.listingsapp.controller;
 
-import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.UserService;
@@ -38,7 +37,7 @@ public class EditProfileController extends Controller {
 
     private Uzivatel user;
     private PravnickaOsoba business;
-    private UserService userService = new UserService();
+    private final UserService userService = new UserService();
 
     @Override
     void onView(Uzivatel user) {

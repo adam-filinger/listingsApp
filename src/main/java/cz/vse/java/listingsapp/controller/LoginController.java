@@ -13,9 +13,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,6 +29,8 @@ import java.util.ResourceBundle;
  * @version 1.1
  */
 public class LoginController extends Controller implements Initializable {
+
+    private Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @FXML
     public BorderPane rootPane;
@@ -91,7 +94,7 @@ public class LoginController extends Controller implements Initializable {
                 stage.setScene(scene);
             }
             catch (IOException e) {
-                e.printStackTrace();
+                logger.warn("Failed to load main view, returning to login view", e);
             }
         } else {
             showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username/email or password.");
@@ -110,7 +113,7 @@ public class LoginController extends Controller implements Initializable {
             Stage stage = (Stage) rootPane.getScene().getWindow();
             stage.setScene(scene);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("Failed to load sign up view, returning to login view", e);
         }
     }
 

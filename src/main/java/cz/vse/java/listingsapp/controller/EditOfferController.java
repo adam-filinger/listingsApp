@@ -25,7 +25,7 @@ public class EditOfferController extends Controller {
     private TextField priceField;
 
     private Nabidka offer;
-    private OfferService offerService = new OfferService();
+    private final OfferService offerService = new OfferService();
 
     @Override
     void onView(Nabidka offer, Uzivatel user) {

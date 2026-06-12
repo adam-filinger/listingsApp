@@ -27,13 +27,11 @@
 
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
-            <content>
-                <VBox fx:id="listingsContainer" spacing="15" style="-fx-background-color: #F5F5F5;">
-                    <padding>
-                        <Insets top="20" right="20" bottom="20" left="20"/>
-                    </padding>
-                </VBox>
-            </content>
+            <VBox fx:id="listingsContainer" spacing="15" style="-fx-background-color: #F5F5F5;">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+            </VBox>
         </ScrollPane>
     </center>
 

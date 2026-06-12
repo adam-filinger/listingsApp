@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class MyOffersController extends Controller {
     private VBox offersContainer;
 
     private Uzivatel user;
-    private OfferService offerService = new OfferService();
+    private final OfferService offerService = new OfferService();
 
     @Override
     void onView(Poptavka listing, Uzivatel user) {
@@ -47,25 +46,11 @@ public class MyOffersController extends Controller {
     }
 
     private VBox createOfferCard(Nabidka offer) {
-        VBox card = new VBox(5);
-        card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #DDDDDD; -fx-border-radius: 3; -fx-padding: 10;");
-
-        card.setOnMouseClicked(event -> {
+        CardCreator cc = new CardCreator();
+        return cc.createOfferCard(offer, event -> {
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                if (mainController != null) {
-                    mainController.showOfferDetail(offer);
-                }
+                mainController.showOfferDetail(offer);
             }
         });
-
-        Label listingLabel = new Label("Offer for: " + offer.getPoptavka().getName());
-        listingLabel.setFont(new Font("System Bold", 14));
-
-        Label priceLabel = new Label(String.format("Proposed Price: $%.2f", offer.getProposedPrice()));
-        Label messageLabel = new Label(offer.getText());
-        messageLabel.setWrapText(true);
-
-        card.getChildren().addAll(listingLabel, priceLabel, messageLabel);
-        return card;
     }
 }

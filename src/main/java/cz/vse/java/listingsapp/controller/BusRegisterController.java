@@ -6,7 +6,6 @@ import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.model.validators.CustomValidator;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
-import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.UserService;
@@ -129,7 +128,7 @@ public class BusRegisterController extends Controller implements Initializable {
             Stage stage = (Stage) formContainer.getScene().getWindow();
             stage.setScene(scene);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("Failed to load main view, returning to login view", e);
         }
     }
 

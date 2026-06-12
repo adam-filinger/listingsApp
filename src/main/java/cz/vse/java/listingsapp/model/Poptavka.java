@@ -1,6 +1,8 @@
 package cz.vse.java.listingsapp.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -43,9 +45,8 @@ public class Poptavka {
     )
     private Set<ListingTag> tags;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = false, updatable = false)
-    private Date createdDate;
+    private LocalDateTime createdDate;
 
     // Getters and Setters
 
@@ -113,11 +114,11 @@ public class Poptavka {
         this.tags = tags;
     }
 
-    public Date getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 }
