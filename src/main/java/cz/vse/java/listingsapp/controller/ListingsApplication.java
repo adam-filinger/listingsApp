@@ -22,7 +22,6 @@ public class ListingsApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        // Use getClass().getResource() for a more robust path to the FXML file
         URL fxmlLocation = getClass().getResource("/cz/vse/java/listingsapp/view/login-view.fxml");
         if (fxmlLocation == null) {
             throw new IOException("Cannot find FXML file. Please check the path.");

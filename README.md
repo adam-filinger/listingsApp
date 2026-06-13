@@ -29,7 +29,7 @@ This project uses Java and Maven. To build and run the application, follow these
 - **Version:** 2.2.224 (or as specified in `pom.xml`)
 
 ## List of Mistakes
-- 
+- Bilingual setup in datatabase model
 
 ## List of Differences to Initial Requirements
--
+- When adding a listing, users can't choose to display the listing to only business users
