@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 <VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="cz.vse.java.listingsapp.controller.ListingDetailController"
+      fx:controller="cz.vse.java.listingsapp.controller.listingControllers.ListingDetailController"
       spacing="15" style="-fx-background-color: #FAFAFA; -fx-padding: 20;">
     <HBox alignment="CENTER_LEFT" spacing="10">
         <Label fx:id="titleLabel" text="Listing Title" HBox.hgrow="ALWAYS">

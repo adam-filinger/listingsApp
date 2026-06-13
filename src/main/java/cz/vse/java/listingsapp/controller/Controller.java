@@ -6,16 +6,16 @@ import cz.vse.java.listingsapp.model.Uzivatel;
 import javafx.scene.control.Alert;
 
 public abstract class Controller {
-    MainViewController mainController;
+    protected MainViewController mainController;
 
 
-    void onView(Uzivatel user) {
-
-    }
-    void onView(Poptavka listing, Uzivatel user) {
+    protected void onView(Uzivatel user) {
 
     }
-    void onView(Nabidka offer, Uzivatel user) {
+    protected void onView(Poptavka listing, Uzivatel user) {
+
+    }
+    protected void onView(Nabidka offer, Uzivatel user) {
 
     }
 
@@ -25,7 +25,7 @@ public abstract class Controller {
      * @param alertType Type of alert to display.
      * @param title Title of the alert dialog.
      */
-    void showAlert(Alert.AlertType alertType, String title, String message) {
+    protected void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -34,7 +34,7 @@ public abstract class Controller {
     }
 
 
-    void setMainController(MainViewController controller){
+    protected void setMainController(MainViewController controller){
         mainController = controller;
     }
 

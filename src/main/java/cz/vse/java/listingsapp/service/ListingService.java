@@ -1,5 +1,6 @@
 package cz.vse.java.listingsapp.service;
 
+import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import jakarta.persistence.EntityManager;
@@ -41,9 +42,9 @@ public class ListingService {
 
     }
 
-    public void updatePoptavka(Poptavka poptavka) throws OptimisticLockException {
+    public Poptavka updatePoptavka(Poptavka poptavka) throws OptimisticLockException {
         if (poptavka == null) {
-            return;
+            return null;
         }
         try{
             jpaProvider.withTransaction(em -> em.merge(poptavka));
@@ -55,6 +56,7 @@ public class ListingService {
                 throw new JDBCConnectionException("Database connection error while updating listing", sqlException.getSQLException());
             }
         }
+        return findPoptavkaById(poptavka.getId());
     }
 
     public Poptavka findPoptavkaById(int id) {
@@ -70,7 +72,7 @@ public class ListingService {
         EntityManager em = jpaProvider.getEntityManager();
         try {
             TypedQuery<Poptavka> query = em.createQuery(
-                        "SELECT p FROM Poptavka p ORDER BY p.createdDate DESC", Poptavka.class);
+                        "SELECT p FROM Poptavka p WHERE p.id NOT IN (SELECT n.poptavka.id FROM Nabidka n WHERE n.status = 'PRIJATA') ORDER BY p.createdDate DESC", Poptavka.class);
 
             return query.getResultList();
         } catch (Exception e) {
@@ -97,4 +99,6 @@ public class ListingService {
             em.close();
         }
     }
+
+
 }

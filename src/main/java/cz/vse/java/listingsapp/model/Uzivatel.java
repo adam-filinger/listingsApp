@@ -1,11 +1,13 @@
 package cz.vse.java.listingsapp.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Represents a user of the application.
  * @author Adam Filinger
- * @version 1.0
+ * @version 1.1
  */
 @Entity
 @Table(name = "uzivatel")
@@ -26,6 +28,9 @@ public class Uzivatel {
 
     @Column(nullable = false)
     private String passwd;
+
+    @Version
+    private int version;
 
     // Getters and Setters
 

@@ -1,4 +1,4 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.login;
 
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Form;
@@ -6,6 +6,8 @@ import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.model.structure.PasswordField;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
+import cz.vse.java.listingsapp.controller.Controller;
+import cz.vse.java.listingsapp.controller.MainViewController;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.UserService;
 import javafx.fxml.FXML;
@@ -117,17 +119,4 @@ public class LoginController extends Controller implements Initializable {
         }
     }
 
-    /**
-     * Shows an alert dialog.
-     * @param alertType The type of the alert.
-     * @param title The title of the alert.
-     * @param message The message of the alert.
-     */
-    void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }

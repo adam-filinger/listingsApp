@@ -1,4 +1,4 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.business;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

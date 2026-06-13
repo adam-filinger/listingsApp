@@ -1,4 +1,4 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.singUp;
 
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Form;

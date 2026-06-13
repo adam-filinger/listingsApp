@@ -1,11 +1,13 @@
 package cz.vse.java.listingsapp.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Represents an offer made by a user for a listing.
  * @author Adam Filinger
- * @version 1.0
+ * @version 1.1
  */
 @Entity
 @Table(name = "nabidka")
@@ -17,10 +19,12 @@ public class Nabidka {
 
     @ManyToOne
     @JoinColumn(name = "poptavka_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Poptavka poptavka;
 
     @ManyToOne
     @JoinColumn(name = "uzivatel_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Uzivatel uzivatel;
 
     @Lob
@@ -32,6 +36,9 @@ public class Nabidka {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusNabidky status;
+
+    @Version
+    private int version;
 
     // Getters and Setters
 

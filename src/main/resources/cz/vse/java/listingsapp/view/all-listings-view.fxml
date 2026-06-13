@@ -9,7 +9,7 @@
 <?import javafx.scene.control.ComboBox?>
 
 <BorderPane style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="cz.vse.java.listingsapp.controller.AllListingsController">
+            fx:controller="cz.vse.java.listingsapp.controller.listingControllers.AllListingsController">
 
     <top>
         <VBox alignment="CENTER" spacing="10">

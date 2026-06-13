@@ -1,5 +1,6 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.listingControllers;
 
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.ListingService;
@@ -67,8 +68,7 @@ public class EditListingController extends Controller {
             listing.setDescription(descriptionArea.getText());
             listing.setPrice(Double.parseDouble(priceField.getText()));
 
-            listingService.updatePoptavka(listing);
-
+            listing = listingService.updatePoptavka(listing);
             // Navigate back to the detail view
             mainController.showListingDetail(listing);
         } catch (NumberFormatException e) {
@@ -76,7 +76,7 @@ public class EditListingController extends Controller {
         } catch (OptimisticLockException e) {
             logger.warn("Optimistic lock failed for listing: {}", listing.getId(), e);
             showAlert(Alert.AlertType.WARNING, "Update conflict", "This listing was modified by another user. Please refresh and try again.");
-            // Optionally, refresh the listing data
+            listing = listingService.findPoptavkaById(listing.getId());
             mainController.showListingDetail(listingService.findPoptavkaById(listing.getId()));
         }
         catch(JDBCConnectionException e){
@@ -100,7 +100,7 @@ public class EditListingController extends Controller {
 
 
     @Override
-    public void onView(Poptavka listing, Uzivatel user) {
+    protected void onView(Poptavka listing, Uzivatel user) {
         setListing(listing);
     }
 }

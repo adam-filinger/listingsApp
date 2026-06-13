@@ -1,5 +1,7 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.listingControllers;
 
+import cz.vse.java.listingsapp.controller.CardCreator;
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.ListingService;
@@ -27,7 +29,7 @@ public class MyListingsController extends Controller {
     private final ListingService listingService = new ListingService();
 
     @Override
-    void onView(Poptavka listing, Uzivatel user) {
+    protected void onView(Poptavka listing, Uzivatel user) {
         this.user = user;
         loadListings();
     }

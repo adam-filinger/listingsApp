@@ -1,6 +1,8 @@
 package cz.vse.java.listingsapp.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -9,7 +11,7 @@ import java.util.Set;
 /**
  * Represents a listing created by a legal entity.
  * @author Adam Filinger
- * @version 1.2
+ * @version 1.3
  */
 @Entity
 @Table(name = "poptavka")
@@ -24,6 +26,7 @@ public class Poptavka {
 
     @ManyToOne
     @JoinColumn(name = "pravnicka_osoba_id", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PravnickaOsoba pravnickaOsoba;
 
     @Column(nullable = false)

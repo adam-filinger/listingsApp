@@ -6,7 +6,7 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="cz.vse.java.listingsapp.controller.SignUpController">
+            fx:controller="cz.vse.java.listingsapp.controller.singUp.SignUpController">
     <bottom>
         <VBox spacing="10" alignment="CENTER">
             <padding>

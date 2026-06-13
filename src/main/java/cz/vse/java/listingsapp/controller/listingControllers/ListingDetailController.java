@@ -1,5 +1,7 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.listingControllers;
 
+import cz.vse.java.listingsapp.controller.CardCreator;
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
@@ -13,7 +15,8 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 
 /**
@@ -48,7 +51,7 @@ public class ListingDetailController extends Controller {
     private final OfferService offerService = new OfferService();
 
     @Override
-    public void onView(Poptavka listing, Uzivatel user) {
+    protected void onView(Poptavka listing, Uzivatel user) {
         this.listing = listing;
         this.user = user;
         displayListingDetails();
@@ -61,7 +64,7 @@ public class ListingDetailController extends Controller {
         priceLabel.setText(String.format("$%.2f", listing.getPrice()));
         descriptionLabel.setText(listing.getDescription());
         companyLabel.setText(listing.getPravnickaOsoba().getName());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        DateTimeFormatter dateFormat = new DateTimeFormatterBuilder().appendPattern("MMM dd, yyyy").toFormatter();
         dateLabel.setText(dateFormat.format(listing.getCreatedDate()));
     }
 

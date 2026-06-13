@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="cz.vse.java.listingsapp.controller.EditProfileController"
+      fx:controller="cz.vse.java.listingsapp.controller.offerControllers.EditProfileController"
       spacing="15" style="-fx-background-color: #FAFAFA; -fx-padding: 20;">
     <Label text="Edit Profile">
         <font>

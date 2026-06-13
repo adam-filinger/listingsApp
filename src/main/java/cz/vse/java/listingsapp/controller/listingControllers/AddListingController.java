@@ -1,8 +1,9 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.listingControllers;
 
 import com.dlsc.formsfx.model.event.FormEvent;
 import com.dlsc.formsfx.model.structure.*;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.Category;
 import cz.vse.java.listingsapp.model.ListingTag;
 import cz.vse.java.listingsapp.model.Poptavka;
@@ -19,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,7 +48,7 @@ public class AddListingController extends Controller implements Initializable  {
     }
 
     @Override
-    void onView(Uzivatel user) {
+    protected void onView(Uzivatel user) {
         this.user = user;
         form.reset();
         listingForm.resetForm();

@@ -2,12 +2,15 @@ package cz.vse.java.listingsapp.service;
 
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
+import cz.vse.java.listingsapp.model.StatusNabidky;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.TypedQuery;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service for handling offer-related operations.
@@ -40,11 +43,23 @@ public class OfferService {
      * Updates an existing offer in the database.
      * @param nabidka The offer to update.
      */
-    public void updateNabidka(Nabidka nabidka) throws Exception {
+    public Nabidka updateNabidka(Nabidka nabidka) throws Exception {
         if (nabidka == null) {
-            return;
+            return null;
         }
-        jpaProvider.withTransaction(em -> em.merge(nabidka));
+        try{
+            jpaProvider.withTransaction(em -> em.merge(nabidka));
+        } catch (OptimisticLockException e) {
+            throw new OptimisticLockException("Optimistic lock exception occurred while updating offer: " + nabidka.getId() + ".", e);
+        }
+        return getOfferById(nabidka);
+    }
+
+
+    public Nabidka getOfferById(Nabidka offer){
+        try (EntityManager em = jpaProvider.getEntityManager()) {
+            return em.find(Nabidka.class, offer.getId());
+        }
     }
 
     /**
@@ -103,6 +118,12 @@ public class OfferService {
             return Collections.emptyList();
         } finally {
             em.close();
+        }
+    }
+
+    public boolean isAccepted(Nabidka offer) {
+        try(EntityManager em = jpaProvider.getEntityManager()){
+            return Objects.equals(StatusNabidky.PRIJATA, em.find(Nabidka.class, offer.getId()).getStatus());
         }
     }
 }

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Pravnicka_Osoba (
     name VARCHAR(255),
     email VARCHAR(255),
     tel VARCHAR(255),
-    FOREIGN KEY (uzivatel_id) REFERENCES Uzivatel(ID)
+    FOREIGN KEY (uzivatel_id) REFERENCES Uzivatel(ID) ON DELETE CASCADE
 );
 
 -- Poptavka Table
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Poptavka (
     created_date DATE,
     version INT,
     category VARCHAR(255),
-    FOREIGN KEY (ICO) REFERENCES PRAVNICKA_OSOBA(ICO)
+    FOREIGN KEY (ICO) REFERENCES PRAVNICKA_OSOBA(ICO) ON DELETE CASCADE
 );
 
 -- ListingTag Table
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS poptavka_listing_tag (
     poptavka_id INT,
     listing_tag_id INT,
     PRIMARY KEY (poptavka_id, listing_tag_id),
-    FOREIGN KEY (poptavka_id) REFERENCES Poptavka(ID),
+    FOREIGN KEY (poptavka_id) REFERENCES Poptavka(ID) ON DELETE CASCADE,
     FOREIGN KEY (listing_tag_id) REFERENCES listing_tag(ID)
 );
 
@@ -53,6 +53,6 @@ CREATE TABLE IF NOT EXISTS Nabidka (
     text TEXT,
     proposed_price DOUBLE,
     status VARCHAR(255),
-    FOREIGN KEY (poptavka_id) REFERENCES Poptavka(ID),
-    FOREIGN KEY (uzivatel_id) REFERENCES Uzivatel(ID)
+    FOREIGN KEY (poptavka_id) REFERENCES Poptavka(ID) ON DELETE CASCADE,
+    FOREIGN KEY (uzivatel_id) REFERENCES Uzivatel(ID) ON DELETE CASCADE
 );

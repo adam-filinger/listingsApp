@@ -1,4 +1,4 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.business;
 
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Form;
@@ -6,6 +6,8 @@ import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.model.validators.CustomValidator;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
+import cz.vse.java.listingsapp.controller.Controller;
+import cz.vse.java.listingsapp.controller.MainViewController;
 import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.UserService;
@@ -87,7 +89,7 @@ public class BusRegisterController extends Controller implements Initializable {
     }
     
     @Override
-    void onView(Uzivatel user) {
+    protected void onView(Uzivatel user) {
         this.user = user;
         businessForm.resetForm();
         form.reset();
@@ -111,11 +113,13 @@ public class BusRegisterController extends Controller implements Initializable {
 
         try {
             userService.saveBusiness(pravnickaOsoba);
-            showSuccessDialog();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Business registered successfully.");
+            mainController.setUser(user);
         } catch (Exception e) {
             logger.error("Failed to register business", e);
-            showErrorDialog();
+            showAlert(Alert.AlertType.ERROR, "Error", "An error occurred during registration. Please try again.");
         }
+        goToMainMenu();
     }
 
     @FXML
@@ -132,35 +136,4 @@ public class BusRegisterController extends Controller implements Initializable {
         }
     }
 
-    private void showSuccessDialog() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText("Business registered successfully!");
-        alert.show();
-
-        PauseTransition delay = new PauseTransition(Duration.seconds(3));
-        delay.setOnFinished(event -> {
-            alert.close();
-            goToMainMenu();
-        });
-        delay.play();
-    }
-
-    private void showErrorDialog() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("An error occurred during registration.");
-        alert.setContentText("An entity with this ICO or email already exists.");
-
-        ButtonType backButton = new ButtonType("Back to Registration");
-        ButtonType mainMenuButton = new ButtonType("Back to Main Menu");
-
-        alert.getButtonTypes().setAll(backButton, mainMenuButton);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == mainMenuButton) {
-            goToMainMenu();
-        }
-    }
 }

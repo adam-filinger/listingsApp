@@ -1,5 +1,6 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.offerControllers;
 
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.StatusNabidky;
 import cz.vse.java.listingsapp.model.Uzivatel;
@@ -40,7 +41,7 @@ public class OfferDetailController extends Controller {
     private final OfferService offerService = new OfferService();
 
     @Override
-    void onView(Nabidka offer, Uzivatel user) {
+    protected void onView(Nabidka offer, Uzivatel user) {
             this.offer = offer;
             this.user = user;
             displayOfferDetails();
@@ -65,7 +66,7 @@ public class OfferDetailController extends Controller {
             return;
         }
 
-        modifyOfferButton.setVisible(isOfferOwner);
+        modifyOfferButton.setVisible(isOfferOwner && !offerService.isAccepted(offer));
         acceptOfferButton.setVisible(isListingOwner);
     }
 

@@ -146,7 +146,7 @@ public class MainViewController {
     }
 
     @FXML
-    private void handleShowAllListings() {
+    public void handleShowAllListings() {
         switchView("allListings", null);
     }
 

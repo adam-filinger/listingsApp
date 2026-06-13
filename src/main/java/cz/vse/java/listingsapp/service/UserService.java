@@ -1,11 +1,17 @@
 package cz.vse.java.listingsapp.service;
 
+import cz.vse.java.listingsapp.model.Nabidka;
+import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.TypedQuery;
+import org.hibernate.exception.JDBCConnectionException;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.List;
 
 /**
  * Service for handling user-related operations.
@@ -15,8 +21,12 @@ import org.mindrot.jbcrypt.BCrypt;
 public class UserService {
 
     private final JPAProvider jpaProvider;
+    private final ListingService listingService;
+    private final OfferService offerService;
 
     public UserService() {
+        this.listingService = new ListingService();
+        this.offerService = new OfferService();
         this.jpaProvider = JPAProvider.getInstance();
     }
 
@@ -99,19 +109,41 @@ public class UserService {
         }
     }
 
-    public void updateUser(Uzivatel user, PravnickaOsoba business) throws Exception {
-        jpaProvider.withTransaction(em -> {
-            em.merge(user);
-            if (business != null) {
-                em.merge(business);
-            }
-        });
+    public Uzivatel updateUser(Uzivatel user, PravnickaOsoba business) throws Exception {
+        try{
+            jpaProvider.withTransaction(em -> {
+                em.merge(user);
+                if (business != null) {
+                    em.merge(business);
+                }
+            });
+        } catch (OptimisticLockException e){
+            throw new OptimisticLockException("Optimistic lock exception occurred while updating user: " + user.getId() + ".", e);
+        } catch (JDBCConnectionException e){
+            throw new JDBCConnectionException("JDBC connection exception occurred while updating user: " + user.getId() + ".", e.getSQLException());
+        }
+        return getUser(user);
+
     }
 
     public void deleteUser(Uzivatel user) throws Exception {
-        jpaProvider.withTransaction(em -> {
-            Uzivatel managedUser = em.merge(user);
-            em.remove(managedUser);
-        });
+        try{
+            jpaProvider.withTransaction(em -> {
+                Uzivatel managedUser = em.merge(user);
+                em.remove(managedUser);
+            });
+        } catch (OptimisticLockException e){
+            throw new OptimisticLockException("Optimistic lock exception occurred while updating user: " + user.getId() + ".", e);
+        } catch (JDBCConnectionException e){
+            throw new JDBCConnectionException("JDBC connection exception occurred while updating user: " + user.getId() + ".", e.getSQLException());
+        }
     }
+
+    public Uzivatel getUser(Uzivatel user){
+        try (EntityManager em = jpaProvider.getEntityManager();){
+            return em.find(Uzivatel.class, user.getId());
+        }
+    }
+
+
 }

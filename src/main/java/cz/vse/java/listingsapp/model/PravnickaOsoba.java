@@ -1,11 +1,13 @@
 package cz.vse.java.listingsapp.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Represents a legal entity.
  * @author Adam Filinger
- * @version 1.0
+ * @version 1.1
  */
 @Entity
 @Table(name = "pravnicka_osoba")
@@ -18,8 +20,9 @@ public class PravnickaOsoba {
     @Column(unique = true, nullable = false)
     private String ico;
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "uzivatel_id", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Uzivatel uzivatel;
 
     @Column(nullable = false)
@@ -29,6 +32,9 @@ public class PravnickaOsoba {
     private String email;
 
     private String tel;
+
+    @Version
+    private int version;
 
     // Getters and Setters
 

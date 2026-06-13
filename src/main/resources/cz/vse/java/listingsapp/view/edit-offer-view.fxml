@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="cz.vse.java.listingsapp.controller.EditOfferController"
+      fx:controller="cz.vse.java.listingsapp.controller.offerControllers.EditOfferController"
       spacing="15" style="-fx-background-color: #FAFAFA; -fx-padding: 20;">
     <Label text="Edit Offer">
         <font>

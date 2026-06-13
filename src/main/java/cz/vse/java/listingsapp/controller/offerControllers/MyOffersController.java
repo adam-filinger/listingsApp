@@ -1,5 +1,7 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.offerControllers;
 
+import cz.vse.java.listingsapp.controller.CardCreator;
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
@@ -25,7 +27,7 @@ public class MyOffersController extends Controller {
     private final OfferService offerService = new OfferService();
 
     @Override
-    void onView(Poptavka listing, Uzivatel user) {
+    protected void onView(Uzivatel user) {
         this.user = user;
         loadOffers();
     }

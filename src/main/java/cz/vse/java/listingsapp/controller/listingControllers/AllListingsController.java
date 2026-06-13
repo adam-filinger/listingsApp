@@ -1,5 +1,7 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.listingControllers;
 
+import cz.vse.java.listingsapp.controller.CardCreator;
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.Category;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.Uzivatel;
@@ -50,7 +52,7 @@ public class AllListingsController extends Controller implements Initializable {
     }
     
     @Override
-    void onView(Uzivatel user) {
+    protected void onView(Uzivatel user) {
         this.user = user;
         if(mainController.getCurrentViewName().equals("myListings")){
             listingsTitle.setText("My Listings");

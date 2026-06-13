@@ -1,5 +1,6 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.offerControllers;
 
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.Nabidka;
 import cz.vse.java.listingsapp.model.Poptavka;
 import cz.vse.java.listingsapp.model.StatusNabidky;
@@ -38,7 +39,7 @@ public class CreateOfferController extends Controller {
     }
 
     @Override
-    void onView(Poptavka listing, Uzivatel user) {
+    protected void onView(Poptavka listing, Uzivatel user) {
         this.listing = listing;
         this.user = user;
         listingTitleLabel.setText("For Listing: '" + listing.getName() + "'");

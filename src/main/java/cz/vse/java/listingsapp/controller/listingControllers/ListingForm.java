@@ -1,4 +1,4 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.listingControllers;
 
 import cz.vse.java.listingsapp.model.Category;
 import javafx.beans.property.DoubleProperty;

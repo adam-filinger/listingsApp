@@ -1,8 +1,10 @@
-package cz.vse.java.listingsapp.controller;
+package cz.vse.java.listingsapp.controller.offerControllers;
 
+import cz.vse.java.listingsapp.controller.Controller;
 import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.UserService;
+import jakarta.persistence.OptimisticLockException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -40,9 +42,9 @@ public class EditProfileController extends Controller {
     private final UserService userService = new UserService();
 
     @Override
-    void onView(Uzivatel user) {
-        this.user = user;
-        this.business = userService.getBusinessForUser(user);
+    protected void onView(Uzivatel user) {
+        this.user = mainController.getUser().getKey();
+        this.business = mainController.getUser().getValue();
         populateFields();
         updateViewForUserType();
     }
@@ -74,13 +76,24 @@ public class EditProfileController extends Controller {
                 business.setTel(phoneField.getText());
             }
 
-            userService.updateUser(user, business);
+
+            user = userService.updateUser(user, business);
+            mainController.setUser(user);
 
             showAlert(Alert.AlertType.INFORMATION, "Success", "Profile updated successfully.");
-        } catch (Exception e) {
+
+        } catch (OptimisticLockException e){
+            logger.warn("Optimistic lock failed for user: {}", user.getId(), e);
+            showAlert(Alert.AlertType.WARNING, "Update conflict", "This user was modified by another user. Please refresh and try again.");
+            user = userService.getUser(user);
+            business = userService.getBusinessForUser(user);
+            mainController.setUser(user);
+        }
+        catch (Exception e) {
             logger.error("Failed to update profile for user: {}", user.getId(), e);
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to update profile.");
         }
+        mainController.handleShowAllListings();
     }
 
     @FXML
@@ -96,10 +109,17 @@ public class EditProfileController extends Controller {
                 userService.deleteUser(user);
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Account deleted successfully.");
                 mainController.handleLogout();
-            } catch (Exception e) {
+            } catch (OptimisticLockException e) {
+                logger.warn("Optimistic lock failed for user: {}", user.getId(), e);
+                showAlert(Alert.AlertType.WARNING, "Update conflict", "This user was modified by another user. Please refresh and try again.");
+                user = userService.getUser(user);
+                mainController.setUser(user);
+            }
+            catch (Exception e) {
                 logger.error("Failed to delete account for user: {}", user.getId(), e);
                 showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete account.");
             }
+            mainController.handleShowAllListings();
         }
     }
 }
