@@ -41,7 +41,6 @@ public class Poptavka {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
 

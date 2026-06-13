@@ -30,20 +30,6 @@ CREATE TABLE IF NOT EXISTS Poptavka (
     FOREIGN KEY (ICO) REFERENCES PRAVNICKA_OSOBA(ICO) ON DELETE CASCADE
 );
 
--- ListingTag Table
-CREATE TABLE IF NOT EXISTS listing_tag (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) UNIQUE
-);
-
--- poptavka_listing_tag Table
-CREATE TABLE IF NOT EXISTS poptavka_listing_tag (
-    poptavka_id INT,
-    listing_tag_id INT,
-    PRIMARY KEY (poptavka_id, listing_tag_id),
-    FOREIGN KEY (poptavka_id) REFERENCES Poptavka(ID) ON DELETE CASCADE,
-    FOREIGN KEY (listing_tag_id) REFERENCES listing_tag(ID)
-);
 
 -- Nabidka Table
 CREATE TABLE IF NOT EXISTS Nabidka (

@@ -74,10 +74,8 @@ public class AddListingController extends Controller implements Initializable  {
                 .label("Category")
                 .required("This field is required");
 
-        StringField tagsField = Field.ofStringType(listingForm.tagsProperty())
-                .label("Tags (comma-separated)");
 
-        Group formGroup = Group.of(nameField, descriptionField, priceField, categoryField, tagsField);
+        Group formGroup = Group.of(nameField, descriptionField, priceField, categoryField);
         form = Form.of(formGroup).title("Add Listing");
         form.addEventHandler(FormEvent.EVENT_FORM_PERSISTED,e -> listingForm.categoryProperty().setValue(categoryField.getSelection()));
 
