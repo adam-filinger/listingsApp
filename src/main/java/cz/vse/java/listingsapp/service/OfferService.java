@@ -7,6 +7,7 @@ import cz.vse.java.listingsapp.model.Uzivatel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.TypedQuery;
+import org.hibernate.exception.JDBCConnectionException;
 
 import java.util.Collections;
 import java.util.List;
@@ -126,4 +127,23 @@ public class OfferService {
             return Objects.equals(StatusNabidky.PRIJATA, em.find(Nabidka.class, offer.getId()).getStatus());
         }
     }
+
+    public void deleteOffer(Nabidka offer) throws Exception {
+        if (offer == null) {
+            return;
+        }
+        try {
+            jpaProvider.withTransaction(em -> {
+                Nabidka managedOffer = em.merge(offer);
+                em.remove(managedOffer);
+            });
+        } catch (OptimisticLockException e) {
+            throw new OptimisticLockException("Optimistic lock exception occurred while deleting offer: " + offer.getId() + ".", e);
+        } catch (JDBCConnectionException e) {
+            throw new JDBCConnectionException("JDBC connection exception occurred while deleting offer: " + offer.getId() + ".", e.getSQLException());
+        } catch (Exception e) {
+            throw new Exception("Failed to delete offer: " + offer.getId() + ".", e);
+        }
+    }
+
 }

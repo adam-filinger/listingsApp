@@ -132,6 +132,7 @@ public class MainViewController {
         if (user.getValue() != null) {
             registerBusinessMenuItem.setVisible(false);
         } else {
+            registerBusinessMenuItem.setVisible(true);
             addListingMenuItem.setVisible(false);
             myListingsMenuItem.setVisible(false);
         }

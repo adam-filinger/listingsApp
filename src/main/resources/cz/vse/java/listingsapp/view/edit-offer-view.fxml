@@ -22,6 +22,7 @@
     </VBox>
     <HBox spacing="10" alignment="CENTER_RIGHT">
         <Button onAction="#handleUpdateOffer" text="Update Offer" style="-fx-base: #4CAF50;"/>
-        <Button onAction="#handleCancel" text="Cancel" style="-fx-base: #f44336;"/>
+        <Button onAction="#deleteOffer" text="Delete Offer" style="-fx-base: #e83f3f;"/>
+        <Button onAction="#handleCancel" text="Cancel" style="-fx-base: #ffec00;"/>
     </HBox>
 </VBox>

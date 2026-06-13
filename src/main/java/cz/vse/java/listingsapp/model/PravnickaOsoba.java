@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a legal entity.
  * @author Adam Filinger
@@ -20,9 +23,8 @@ public class PravnickaOsoba {
     @Column(unique = true, nullable = false)
     private String ico;
 
-    @OneToOne(orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uzivatel_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Uzivatel uzivatel;
 
     @Column(nullable = false)
@@ -35,6 +37,7 @@ public class PravnickaOsoba {
 
     @Version
     private int version;
+
 
     // Getters and Setters
 

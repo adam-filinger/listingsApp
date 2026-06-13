@@ -5,7 +5,9 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,7 +28,6 @@ public class Poptavka {
 
     @ManyToOne
     @JoinColumn(name = "pravnicka_osoba_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private PravnickaOsoba pravnickaOsoba;
 
     @Column(nullable = false)
@@ -40,16 +41,11 @@ public class Poptavka {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @ManyToMany
-    @JoinTable(
-            name = "poptavka_listing_tag",
-            joinColumns = @JoinColumn(name = "poptavka_id"),
-            inverseJoinColumns = @JoinColumn(name = "listing_tag_id")
-    )
-    private Set<ListingTag> tags;
 
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
+
+
 
     // Getters and Setters
 
@@ -109,14 +105,6 @@ public class Poptavka {
         this.category = category;
     }
 
-    public Set<ListingTag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<ListingTag> tags) {
-        this.tags = tags;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -124,4 +112,6 @@ public class Poptavka {
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
+
+
 }

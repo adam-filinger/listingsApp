@@ -24,7 +24,6 @@ public class Nabidka {
 
     @ManyToOne
     @JoinColumn(name = "uzivatel_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Uzivatel uzivatel;
 
     @Lob

@@ -24,5 +24,6 @@
         <TextField fx:id="priceField"/>
     </VBox>
     <Button onAction="#handleUpdate" text="Update Listing"/>
+    <Button onAction="#deleteListing" text="Update Listing"/>
     <Button onAction="#handleCancel" text="Cancel"/>
 </VBox>

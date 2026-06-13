@@ -5,8 +5,10 @@ import cz.vse.java.listingsapp.model.PravnickaOsoba;
 import cz.vse.java.listingsapp.model.Uzivatel;
 import cz.vse.java.listingsapp.service.UserService;
 import jakarta.persistence.OptimisticLockException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -36,6 +38,8 @@ public class EditProfileController extends Controller {
     private TextField companyEmailField;
     @FXML
     private TextField phoneField;
+    @FXML
+    private Button deleteBussBtn;
 
     private Uzivatel user;
     private PravnickaOsoba business;
@@ -45,6 +49,7 @@ public class EditProfileController extends Controller {
     protected void onView(Uzivatel user) {
         this.user = mainController.getUser().getKey();
         this.business = mainController.getUser().getValue();
+        deleteBussBtn.setVisible(this.business != null);
         populateFields();
         updateViewForUserType();
     }
@@ -96,19 +101,29 @@ public class EditProfileController extends Controller {
         mainController.handleShowAllListings();
     }
 
-    @FXML
-    private void handleDeleteAccount() {
+
+    private void handleDeleteAccount(String type) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete Account");
         alert.setHeaderText("Are you sure you want to delete your account?");
         alert.setContentText("This action cannot be undone.");
 
+
+
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                userService.deleteUser(user);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Account deleted successfully.");
-                mainController.handleLogout();
+                if ("user".equals(type)) {
+                    userService.deleteUser(user);
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Account deleted successfully.");
+                    mainController.handleLogout();
+                } else if ("business".equals(type)) {
+                    userService.deleteBusiness(user);
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Business deleted successfully.");
+                    mainController.setUser(user);
+                    mainController.onView();
+                }
+
             } catch (OptimisticLockException e) {
                 logger.warn("Optimistic lock failed for user: {}", user.getId(), e);
                 showAlert(Alert.AlertType.WARNING, "Update conflict", "This user was modified by another user. Please refresh and try again.");
@@ -122,4 +137,16 @@ public class EditProfileController extends Controller {
             mainController.handleShowAllListings();
         }
     }
+
+    @FXML
+    private void deleteAccount(){
+        handleDeleteAccount("user");
+    }
+    @FXML
+    private void deleteBusiness(){
+        handleDeleteAccount("business");
+    }
+
+
+
 }

@@ -100,5 +100,34 @@ public class ListingService {
         }
     }
 
+    public boolean hasAcceptedOffer(Poptavka listing){
+        try(EntityManager em = jpaProvider.getEntityManager()){
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(n) FROM Nabidka n WHERE n.poptavka = :listing AND n.status = 'PRIJATA'", Long.class);
+            query.setParameter("listing", listing);
+            return query.getSingleResult() > 0;
+        } catch (Exception e) {
+            logger.warn("Error while checking accepted offers for listing {}: {}", listing.getId(), e.getMessage());
+            return false;
+        }
+    }
+
+    public void deleteListing(Poptavka listing) throws Exception {
+        try{
+            jpaProvider.withTransaction(em -> {
+                    Poptavka managedListing = em.merge(listing);
+                    em.remove(managedListing);
+                });
+        } catch (OptimisticLockException e){
+            throw new OptimisticLockException("Listing was modified by another transaction. Please reload and try again.", e);
+        }
+        catch (JDBCConnectionException e){
+            throw new JDBCConnectionException("Database connection error while deleting listing", e.getSQLException());
+        }
+        catch (Exception e){
+            throw  new Exception("Error while deleting listing: " + listing.getId(), e);
+        }
+    }
+
 
 }

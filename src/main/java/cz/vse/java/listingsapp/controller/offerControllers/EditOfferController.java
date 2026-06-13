@@ -72,6 +72,28 @@ public class EditOfferController extends Controller {
     }
 
     @FXML
+    private void deleteOffer(){
+        try {
+            offerService.deleteOffer(offer);
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Offer deleted successfully.");
+        } catch (OptimisticLockException e) {
+            logger.warn("Optimistic lock failed for offer: {}", offer.getId(), e);
+            showAlert(Alert.AlertType.WARNING, "Update conflict", "This offer was modified by another user. Please refresh and try again.");
+            offer = offerService.getOfferById(offer);
+            mainController.showOfferDetail(offer);
+        } catch (JDBCConnectionException e){
+            logger.error("JDBC connection failed while trying to delete offer: {}", offer.getId(), e);
+            showAlert(Alert.AlertType.ERROR, "JDBC Connection Error", "JDBC connection failed, please try again.");
+        }
+        catch (Exception e) {
+            logger.error("Failed to delete offer: {}", offer.getId(), e);
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete offer.");
+        }
+         mainController.showListingDetail(offer.getPoptavka());
+    }
+
+
+    @FXML
     private void handleCancel() {
         mainController.showOfferDetail(offer);
     }

@@ -34,7 +34,8 @@
         </VBox>
     </VBox>
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button onAction="#handleUpdateProfile" text="Update Profile" style="-fx-base: #4CAF50;"/>
-        <Button onAction="#handleDeleteAccount" text="Delete Account" style="-fx-base: #f44336;"/>
+        <Button  onAction="#handleUpdateProfile" text="Update Profile" style="-fx-base: #4CAF50;"/>
+        <Button fx:id="deleteBussBtn" onAction="#deleteBusiness" visible="false" text="Delete Business" style="-fx-base: #ffb11b;"/>
+        <Button  onAction="#deleteAccount" text="Delete Account"  style="-fx-base: #f44336;"/>
     </HBox>
 </VBox>

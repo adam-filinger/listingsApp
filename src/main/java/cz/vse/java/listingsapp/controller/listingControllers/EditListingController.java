@@ -97,6 +97,26 @@ public class EditListingController extends Controller {
         mainController.showListingDetail(listing);
     }
 
+    @FXML
+    private void deleteListing(){
+        try {
+            listingService.deleteListing(listing);
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Listing deleted successfully.");
+
+        } catch (OptimisticLockException e){
+            logger.warn("Optimistic lock failed for listing: {}", listing.getId(), e);
+            showAlert(Alert.AlertType.WARNING, "Update conflict", "This listing was modified by another user. Please refresh and try again.");
+            listing = listingService.findPoptavkaById(listing.getId());
+            mainController.showListingDetail(listing);
+        } catch (JDBCConnectionException e){
+            logger.error("JDBC connection failed while trying to delete listing: {}", listing.getId(), e);
+            showAlert(Alert.AlertType.ERROR, "JDBC Connection Error", "JDBC connection failed, please try again.");
+        }
+        catch (Exception e) {
+            logger.error("Failed to delete listing: {}", listing.getId(), e);
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete listing.");
+        }
+    }
 
 
     @Override

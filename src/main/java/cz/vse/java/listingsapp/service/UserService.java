@@ -10,6 +10,8 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.TypedQuery;
 import org.hibernate.exception.JDBCConnectionException;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -20,6 +22,7 @@ import java.util.List;
  */
 public class UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final JPAProvider jpaProvider;
     private final ListingService listingService;
     private final OfferService offerService;
@@ -137,6 +140,24 @@ public class UserService {
         } catch (JDBCConnectionException e){
             throw new JDBCConnectionException("JDBC connection exception occurred while updating user: " + user.getId() + ".", e.getSQLException());
         }
+    }
+    public void deleteBusiness(Uzivatel user) throws OptimisticLockException, JDBCConnectionException{
+        try{
+            jpaProvider.withTransaction(em -> {
+                PravnickaOsoba business = getBusinessForUser(user);
+                if (business != null) {
+                    em.remove(em.merge(business));
+                }
+            });
+
+        } catch (OptimisticLockException e){
+            throw new OptimisticLockException("Optimistic lock exception occurred while deleting business for user: " + user.getId() + ".", e);
+        } catch(JDBCConnectionException e){
+            throw new JDBCConnectionException("JDBC connection exception occurred while deleting business for user: " + user.getId() + ".", e.getSQLException());
+        }
+         catch (Exception e){
+             log.warn("Failed to delete business for user {}: {}", user.getId(), e.getMessage());
+         }
     }
 
     public Uzivatel getUser(Uzivatel user){

@@ -53,7 +53,7 @@ public class ListingDetailController extends Controller {
     @Override
     protected void onView(Poptavka listing, Uzivatel user) {
         this.listing = listing;
-        this.user = user;
+        this.user = mainController.getUser().getKey();
         displayListingDetails();
         updateButtonVisibility();
         loadOffers();
@@ -69,7 +69,7 @@ public class ListingDetailController extends Controller {
     }
 
     private void updateButtonVisibility() {
-        if (user != null && (userService.isBusiness(user) && user.getId() == listing.getPravnickaOsoba().getId())) {
+        if (user != null && (mainController.getUser().getValue() != null && mainController.getUser().getValue().getId() == listing.getPravnickaOsoba().getId())) {
             modifyButton.setVisible(true);
             makeOfferButton.setVisible(false);
         } else {

@@ -115,16 +115,6 @@ public class AddListingController extends Controller implements Initializable  {
         poptavka.setCreatedDate(LocalDateTime.now());
         poptavka.setPravnickaOsoba(mainController.getUser().getValue());
 
-        Set<ListingTag> tags = Arrays.stream(listingForm.tagsProperty().get().split(","))
-                .map(String::trim)
-                .filter(tagName -> !tagName.isEmpty())
-                .map(tagName -> {
-                    ListingTag tag = new ListingTag();
-                    tag.setName(tagName);
-                    return tag;
-                })
-                .collect(Collectors.toSet());
-        poptavka.setTags(tags);
 
         try {
             listingService.savePoptavka(poptavka);
